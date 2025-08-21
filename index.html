@@ -35,7 +35,7 @@
   .card h2{margin:0 0 8px;font-size:16px}
 
   /* Inputs table-like rows */
-  .row{display:grid;grid-template-columns:1fr 140px 140px 140px 160px;gap:8px;align-items:left}
+  .row{display:grid;grid-template-columns:1fr 140px 140px 140px 160px;gap:8px;align-items:center}
   .row.head{color:var(--muted);font-size:12px}
   input[type="number"]{
     width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
@@ -79,12 +79,12 @@
       <h2>Inputs</h2>
 
       <div class="row head">
-        <div>Field</div><div>Basic</div><div>Medium</div><div>Complex</div><div>Very Complex</div>
+        <div>Field</div><div>Basic[6-9 steps]</div><div>Medium [9-16 steps]</div><div>Complex [16-24 steps] </div><div>Very Complex [25-70]</div>
       </div>
 
       <div class="row">
         <div>no of Testcases</div>
-        <input id="nBasic[6-9 steps]" type="number" value="110" min="0" step="1"/>
+        <input id="nBasic" type="number" value="110" min="0" step="1"/>
         <input id="nMedium" type="number" value="150" min="0" step="1"/>
         <input id="nComplex" type="number" value="250" min="0" step="1"/>
         <input id="nVComplex" type="number" value="250" min="0" step="1"/>
