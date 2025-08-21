@@ -9,14 +9,8 @@
     /* Tricentis palette (approximated) */
     --tri-navy:#0F2A4A;
     --tri-blue:#0054A6;
-    --tri-blue-2:#3E6C99;
-    --tri-blue-3:#5F84B1;
     --tri-teal:#007EA7;
-    --tri-sky:#4FC3E7;
-    --tri-gray:#7C848C;
-    --tri-lime:#D4D35A;
     --tri-orange:#F37021;
-    --tri-magenta:#B71C5A;
 
     /* UI tokens */
     --bg:var(--tri-navy);
@@ -65,7 +59,8 @@
   tbody tr:nth-child(odd) td{background:rgba(255,255,255,.04)}
   tbody tr:nth-child(even) td{background:rgba(0,0,0,.10)}
   tbody td:last-child, thead th:last-child, tfoot th:last-child{border-right:none}
-  tfoot th{background:linear-gradient(180deg,rgba(243,112,33,.60),rgba(243,112,33,.30));color:#fff;border-top:1px solid rgba(255,255,255,.2)}
+  /* Hide footer total; shown as KPI instead */
+  tfoot{display:none}
 
   /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
@@ -159,19 +154,14 @@
           </tr>
         </thead>
         <tbody id="rows"></tbody>
-        <tfoot>
-          <tr>
-            <th colspan="4">Total credits required</th>
-            <th colspan="5" id="totalCredits" style="text-align:right"></th>
-          </tr>
-        </tfoot>
       </table>
 
       <div class="kpis">
         <div class="kpi hl"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
+        <div class="kpi hl"><div class="lbl">Total Credits Required</div><div id="kCredits" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
-        <div class="kpi hl"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg ROI per Test (%)</div><div id="kAvgRoi" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Days Saved</div><div id="kDays" class="val">—</div></div>
       </div>
@@ -263,7 +253,7 @@
     const totalCostSaved = totalSavedHours * x.fte;
     const daysSaved = totalSavedHours / 8;
 
-    $("totalCredits").textContent = fmt(totalCredits,0);
+    $("kCredits").textContent = fmt(totalCredits,0);
     $("kNum").textContent = fmt(totalTests,0);
     $("kAvgMin").textContent = fmt(avgSavedPerTestMin,0);
     $("kHours").textContent = fmt(totalSavedHours,0);
