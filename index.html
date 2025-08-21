@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI ROI Calculator</title>
+  <style>
+    :root {
+      --bg: #0f1320;
+      --panel: #141a2a;
+      --muted: #8ea0b8;
+      --text: #e6edf7;
+      --accent: #4cc38a;
+      --danger: #ff6b6b;
+      --border: #23304a;
+      --focus: #5eb0ef;
+    }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .wrap { max-width: 1100px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    .sub { color: var(--muted); margin-bottom: 24px; }
+    .grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+    }
+    .card h2 { margin-top: 0; font-size: 18px; }
+    .row { display: grid; grid-template-columns: 1fr 140px; gap: 12px; align-items: center; margin-bottom: 12px; }
+    .row label { color: var(--muted); font-size: 14px; }
+    .row input {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
+      background: #0d1220; color: var(--text); outline: none;
+    }
+    .row input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(94,176,239,.15); }
+    .suffix { display: flex; align-items: center; gap: 6px; }
+    .suffix span { color: var(--muted); font-size: 13px; }
+    .note { color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .results {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px;
+    }
+    @media (max-width: 880px) { .results { grid-template-columns: 1fr; } }
+    .kpi {
+      background: #0d1220; border: 1px dashed var(--border); border-radius: 10px; padding: 12px;
+    }
+    .kpi .label { color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+    .kpi .value { font-size: 20px; font-weight: 700; }
+    .value.negative { color: var(--danger); }
+    .footer {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;
+    }
+    button, .link {
+      background: #1a2338; color: var(--text); border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px 14px; cursor: pointer;
+    }
+    button:hover, .link:hover { border-color: var(--focus); }
+    .muted { color: var(--muted); font-size: 12px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>AI ROI Calculator</h1>
+    <div class="sub">Adjust assumptions to estimate Year 1 ROI, monthly payback, and annual savings. Share prefilled links via URL parameters.</div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Assumptions</h2>
+
+        <div class="row">
+          <label for="employees">Employees impacted</label>
+          <input id="employees" type="number" min="0" step="1" value="100" />
+        </div>
+
+        <div class="row">
+          <label for="wage">Average hourly wage</label>
+          <div class="suffix">
+            <input id="wage" type="number" min="0" step="1" value="40" />
+            <span>USD/hr</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <label for="hours">Hours saved per employee per week</label>
+          <div class="suffix">
+            <input id="hours" type="number" min="0" step="0.1" value="1.0" />
+            <span>hrs</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <label for="adoption">Adoption rate</label>
+          <div class="suffix">
+            <input id="adoption" type="number" min="0" max="1" step="0.05" value="0.7" />
+            <span>0–1</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <label for="software">Software/platform cost per month</label>
+          <div class="suffix">
+            <input id="software" type="number" min="0" step="10" value="2500" />
+            <span>USD/mo</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <label for="impl">One-time implementation cost</label>
+          <div class="suffix">
+            <input id="impl" type="number" min="0" step="100" value="20000" />
+            <span>USD</span>
+          </div>
+        </div>
+
+        <div class="note">
+          Tip: set <span class="mono">adoption</span> between 0 and 1 (e.g., 0.7 for 70%).
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Results</h2>
+        <div class="results">
+          <div class="kpi">
+            <div class="label">Year 1 ROI</div>
+            <div id="kpiRoi" class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Monthly Payback</div>
+            <div id="kpiPayback" class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Annual Net Benefit (Year 1)</div>
+            <div id="kpiNet" class="value">—</div>
+          </div>
+        </div>
+
+        <div class="results" style="margin-top: 8px;">
+          <div class="kpi">
+            <div class="label">Annual Hours Saved</div>
+            <div id="kpiHours" class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Annual Labor Savings</div>
+            <div id="kpiLabor" class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Year 1 Total Cost</div>
+            <div id="kpiCost" class="value">—</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <button id="share">Copy shareable link</button>
+          <span id="shareStatus" class="muted"></span>
+        </div>
+        <div class="note">Shareable parameters: <span class="mono">employees, wage, hours, adoption, software, impl</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Formula details</h2>
+      <div class="muted">
+        AnnualHoursSaved = Employees × HoursPerWeek × 52 × Adoption<br/>
+        AnnualLaborSavings = AnnualHoursSaved × HourlyWage<br/>
+        AnnualSoftwareCost = SoftwarePerMonth × 12<br/>
+        Year1TotalCost = AnnualSoftwareCost + Implementation<br/>
+        Year1NetBenefit = AnnualLaborSavings − Year1TotalCost<br/>
+        Year1ROI% = (Year1NetBenefit ÷ Year1TotalCost) × 100<br/>
+        PaybackMonths = Implementation ÷ max((AnnualLaborSavings − AnnualSoftwareCost)/12, 0.0001)
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function toNumber(inputId, fallback) {
+      const raw = $(inputId).value.trim();
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    function fmtMoney(n) {
+      if (!Number.isFinite(n)) return "—";
+      const sign = n < 0 ? "-" : "";
+      const abs = Math.abs(n);
+      return sign + abs.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    }
+
+    function fmtNumber(n) {
+      if (!Number.isFinite(n)) return "—";
+      return n.toLocaleString();
+    }
+
+    function fmtPercent(n) {
+      if (!Number.isFinite(n)) return "—";
+      return n.toLocaleString(undefined, { maximumFractionDigits: 1 }) + "%";
+    }
+
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    function calculate() {
+      const employees = Math.max(0, Math.floor(toNumber("employees", 0)));
+      const wage = Math.max(0, toNumber("wage", 0));
+      const hoursPerWeek = Math.max(0, toNumber("hours", 0));
+      const adoption = clamp(toNumber("adoption", 1), 0, 1);
+      const softwarePerMonth = Math.max(0, toNumber("software", 0));
+      const implementation = Math.max(0, toNumber("impl", 0));
+
+      const annualHoursSaved = employees * hoursPerWeek * 52 * adoption;
+      const annualLaborSavings = annualHoursSaved * wage;
+      const annualSoftwareCost = softwarePerMonth * 12;
+      const year1TotalCost = annualSoftwareCost + implementation;
+      const year1NetBenefit = annualLaborSavings - year1TotalCost;
+      const monthlyNet = (annualLaborSavings - annualSoftwareCost) / 12;
+      const paybackMonths = implementation > 0 ? (implementation / Math.max(monthlyNet, 0.0001)) : 0;
+      const roiPct = year1TotalCost > 0 ? (year1NetBenefit / year1TotalCost) * 100 : 0;
+
+      // Update UI
+      const roiEl = $("kpiRoi");
+      const paybackEl = $("kpiPayback");
+      const netEl = $("kpiNet");
+      const hoursEl = $("kpiHours");
+      const laborEl = $("kpiLabor");
+      const costEl = $("kpiCost");
+
+      roiEl.textContent = fmtPercent(roiPct);
+      paybackEl.textContent = Number.isFinite(paybackMonths) ? (paybackMonths < 0 ? "Immediate" : paybackMonths.toFixed(1) + " mo") : "—";
+      netEl.textContent = fmtMoney(year1NetBenefit);
+      netEl.classList.toggle("negative", year1NetBenefit < 0);
+
+      hoursEl.textContent = fmtNumber(Math.round(annualHoursSaved));
+      laborEl.textContent = fmtMoney(annualLaborSavings);
+      costEl.textContent = fmtMoney(year1TotalCost);
+    }
+
+    function syncFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const map = {
+        employees: "employees",
+        wage: "wage",
+        hours: "hours",
+        adoption: "adoption",
+        software: "software",
+        impl: "impl",
+      };
+      for (const [key, id] of Object.entries(map)) {
+        if (params.has(key)) {
+          $(id).value = params.get(key);
+        }
+      }
+      calculate();
+    }
+
+    function copyShareLink() {
+      const params = new URLSearchParams({
+        employees: $( "employees").value,
+        wage: $( "wage").value,
+        hours: $( "hours").value,
+        adoption: $( "adoption").value,
+        software: $( "software").value,
+        impl: $( "impl").value,
+      });
+      const url = `${location.origin}${location.pathname}?${params.toString()}`;
+      navigator.clipboard.writeText(url)
+        .then(() => { $("shareStatus").textContent = "Link copied"; setTimeout(() => $("shareStatus").textContent = "", 2000); })
+        .catch(() => { $("shareStatus").textContent = "Copy failed"; setTimeout(() => $("shareStatus").textContent = "", 2000); });
+    }
+
+    // Events
+    ["employees","wage","hours","adoption","software","impl"].forEach(id => {
+      $(id).addEventListener("input", calculate);
+      $(id).addEventListener("change", calculate);
+    });
+    $("share").addEventListener("click", copyShareLink);
+
+    // Init
+    syncFromUrl();
+  </script>
+</body>
+</html>
