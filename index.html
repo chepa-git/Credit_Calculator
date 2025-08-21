@@ -3,18 +3,33 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Agentic AI ROI (Excel-Exact)</title>
+<title>Agentic AI ROI (Tricentis)</title>
 <style>
   :root{
-    --bg:#764040;
-    --bg-900:#6a3939;
-    --bg-950:#5c3131;
-    --text:#FFF7F3;
-    --muted:#F1D9D2;
+    /* Tricentis palette (approximated) */
+    --tri-navy:#0F2A4A;
+    --tri-blue:#0054A6;
+    --tri-blue-2:#3E6C99;
+    --tri-blue-3:#5F84B1;
+    --tri-teal:#007EA7;
+    --tri-sky:#4FC3E7;
+    --tri-gray:#7C848C;
+    --tri-lime:#D4D35A;
+    --tri-orange:#F37021;
+    --tri-magenta:#B71C5A;
+
+    /* UI tokens */
+    --bg:var(--tri-navy);
+    --bg-900:#0b223c;
+    --bg-950:#081a30;
+    --text:#FFFFFF;
+    --muted:#DCE7F4;
     --border:rgba(255,255,255,.16);
-    --accent:#FF6C0E;
-    --accent-2:#0087AE;
+
+    --accent:var(--tri-orange);
+    --accent-2:var(--tri-teal);
   }
+
   html,body{margin:0;background:linear-gradient(180deg,var(--bg) 0%, var(--bg-950) 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
   .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
   h1{margin:0 0 10px;font-size:24px}
@@ -34,41 +49,30 @@
   }
   input[type="number"]:focus{outline:2px solid var(--accent-2);border-color:transparent}
 
-  .inputs-grid{
-    display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;margin-top:12px
-  }
+  .inputs-grid{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;margin-top:12px}
   @media (max-width:980px){.inputs-grid{grid-template-columns:repeat(2,minmax(180px,1fr))}}
-  .ig{
-    background:linear-gradient(180deg,rgba(255,108,14,.14),rgba(255,108,14,.06));
-    border:1px solid rgba(255,108,14,.45);border-radius:12px;padding:10px
-  }
-  .ig label{display:block;font-size:12px;color:#fff2ec;margin-bottom:6px}
+  .ig{background:linear-gradient(180deg,rgba(0,84,166,.14),rgba(0,84,166,.06));border:1px solid rgba(0,84,166,.45);border-radius:12px;padding:10px}
+  .ig label{display:block;font-size:12px;color:#f1f7ff;margin-bottom:6px}
   .ig input{width:100%}
 
-  /* Results table formatting */
+  /* Results table */
   table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px;table-layout:fixed}
   colgroup col:nth-child(1){width:140px}
   colgroup col{width:110px}
-  thead th{
-    background:linear-gradient(180deg,rgba(0,135,174,.55),rgba(0,135,174,.25));
-    color:#f4fbff;border-bottom:1px solid var(--border)
-  }
+  thead th{background:linear-gradient(180deg,rgba(0,84,166,.55),rgba(0,84,166,.25));color:#f1fbff;border-bottom:1px solid var(--border)}
   th,td{padding:10px 8px;font-size:13px;text-align:right;border-right:1px solid var(--border)}
   th:first-child,td:first-child{text-align:left}
   tbody tr:nth-child(odd) td{background:rgba(255,255,255,.04)}
   tbody tr:nth-child(even) td{background:rgba(0,0,0,.10)}
   tbody td:last-child, thead th:last-child, tfoot th:last-child{border-right:none}
-  tfoot th{
-    background:linear-gradient(180deg,rgba(255,108,14,.60),rgba(255,108,14,.30));
-    color:#fff;border-top:1px solid rgba(255,255,255,.2)
-  }
+  tfoot th{background:linear-gradient(180deg,rgba(243,112,33,.60),rgba(243,112,33,.30));color:#fff;border-top:1px solid rgba(255,255,255,.2)}
 
   /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
   .kpi{background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
   .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
   .kpi .val{font-weight:800;font-size:18px}
-  .kpi.hl{background:linear-gradient(180deg,rgba(255,108,14,.18),rgba(255,108,14,.07));border-color:rgba(255,108,14,.55)}
+  .kpi.hl{background:linear-gradient(180deg,rgba(243,112,33,.18),rgba(243,112,33,.07));border-color:rgba(243,112,33,.55)}
 </style>
 </head>
 <body>
@@ -140,9 +144,7 @@
       <h2>Results</h2>
 
       <table>
-        <colgroup>
-          <col/><col/><col/><col/><col/><col/><col/><col/><col/>
-        </colgroup>
+        <colgroup><col/><col/><col/><col/><col/><col/><col/><col/><col/></colgroup>
         <thead>
           <tr>
             <th>Test Type</th>
@@ -270,13 +272,23 @@
     $("kDays").textContent = fmt(daysSaved,0);
   }
 
+  function syncFromUrl(){
+    const p=new URLSearchParams(location.search);
+    [...ids.n,...ids.c,...ids.m,...ids.a,...ids.cost,"fte","prodGain","overallInc","avgSavedMin","useAvgForSummary"].forEach(id=>{
+      if(!p.has(id)) return;
+      if(id==="useAvgForSummary"){ $(id).checked = ["1","true","yes"].includes(String(p.get(id)).toLowerCase()); }
+      else { $(id).value = p.get(id); }
+    });
+  }
+
   ["nBasic","nMedium","nComplex","nVComplex","cBasic","cMedium","cComplex","cVComplex",
    "mBasic","mMedium","mComplex","mVComplex","aBasic","aMedium","aComplex","aVComplex",
    "costBasic","costMedium","costComplex","costVComplex","fte","prodGain","overallInc",
    "avgSavedMin","useAvgForSummary"].forEach(id=>{
-     document.getElementById(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
+     $(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
   });
 
+  syncFromUrl();
   calc();
 </script>
 </body>
