@@ -6,65 +6,69 @@
 <title>Agentic AI ROI (Excel-Exact)</title>
 <style>
   :root{
-    --pumpkin:#FF6C0E;
-    --cerulean:#0087AE;
-    --biscay:#1B365D;
-    --biscay-900:#162d50;
-    --biscay-950:#0f223f;
-    --text:#F7FAFF;
-    --muted:#C6D6E6;
-    --border:rgba(255,255,255,.12);
+    --bg:#764040;
+    --bg-900:#6a3939;
+    --bg-950:#5c3131;
+    --text:#FFF7F3;
+    --muted:#F1D9D2;
+    --border:rgba(255,255,255,.16);
+    --accent:#FF6C0E;
+    --accent-2:#0087AE;
   }
-  html,body{margin:0;background:linear-gradient(180deg,var(--biscay) 0%, var(--biscay-950) 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  html,body{margin:0;background:linear-gradient(180deg,var(--bg) 0%, var(--bg-950) 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
   .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
-  h1{margin:0 0 12px;font-size:24px}
+  h1{margin:0 0 10px;font-size:24px}
+
   .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
   @media (max-width:980px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--biscay-900);border:1px solid var(--border);border-radius:14px;padding:16px}
-  .card h2{margin:0 0 10px;font-size:16px}
 
-  /* Inputs */
+  .card{background:var(--bg-900);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+  .card h2{margin:0 0 8px;font-size:16px}
+
+  /* Inputs table-like rows */
   .row{display:grid;grid-template-columns:1fr 140px 140px 140px 160px;gap:8px;align-items:center}
   .row.head{color:var(--muted);font-size:12px}
   input[type="number"]{
     width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
-    background:var(--biscay-950);color:var(--text)
+    background:var(--bg-950);color:var(--text)
   }
-  input[type="number"]:focus{outline:2px solid var(--cerulean);border-color:transparent}
+  input[type="number"]:focus{outline:2px solid var(--accent-2);border-color:transparent}
 
   .inputs-grid{
     display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;margin-top:12px
   }
   @media (max-width:980px){.inputs-grid{grid-template-columns:repeat(2,minmax(180px,1fr))}}
   .ig{
-    background:linear-gradient(180deg,rgba(0,135,174,.15),rgba(0,135,174,.05));
-    border:1px solid rgba(0,135,174,.45);border-radius:12px;padding:10px
+    background:linear-gradient(180deg,rgba(255,108,14,.14),rgba(255,108,14,.06));
+    border:1px solid rgba(255,108,14,.45);border-radius:12px;padding:10px
   }
-  .ig label{display:block;font-size:12px;color:#e6f8ff;margin-bottom:6px}
+  .ig label{display:block;font-size:12px;color:#fff2ec;margin-bottom:6px}
   .ig input{width:100%}
 
-  /* Table */
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{border:1px solid var(--border);padding:10px 8px;font-size:13px;text-align:right;background:var(--biscay-950)}
-  th:first-child,td:first-child{text-align:left}
+  /* Results table formatting */
+  table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px;table-layout:fixed}
+  colgroup col:nth-child(1){width:140px}
+  colgroup col{width:110px}
   thead th{
     background:linear-gradient(180deg,rgba(0,135,174,.55),rgba(0,135,174,.25));
-    color:#f1fbff;border-color:rgba(0,135,174,.55)
+    color:#f4fbff;border-bottom:1px solid var(--border)
   }
+  th,td{padding:10px 8px;font-size:13px;text-align:right;border-right:1px solid var(--border)}
+  th:first-child,td:first-child{text-align:left}
+  tbody tr:nth-child(odd) td{background:rgba(255,255,255,.04)}
+  tbody tr:nth-child(even) td{background:rgba(0,0,0,.10)}
+  tbody td:last-child, thead th:last-child, tfoot th:last-child{border-right:none}
   tfoot th{
     background:linear-gradient(180deg,rgba(255,108,14,.60),rgba(255,108,14,.30));
-    color:#fff;border-color:rgba(255,108,14,.7)
+    color:#fff;border-top:1px solid rgba(255,255,255,.2)
   }
 
   /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
-  .kpi{background:var(--biscay-950);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .kpi{background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
   .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
   .kpi .val{font-weight:800;font-size:18px}
-  .kpi.hl{
-    background:linear-gradient(180deg,rgba(255,108,14,.18),rgba(255,108,14,.07));
-    border-color:rgba(255,108,14,.55)
-  }
+  .kpi.hl{background:linear-gradient(180deg,rgba(255,108,14,.18),rgba(255,108,14,.07));border-color:rgba(255,108,14,.55)}
 </style>
 </head>
 <body>
@@ -136,6 +140,9 @@
       <h2>Results</h2>
 
       <table>
+        <colgroup>
+          <col/><col/><col/><col/><col/><col/><col/><col/><col/>
+        </colgroup>
         <thead>
           <tr>
             <th>Test Type</th>
@@ -263,31 +270,13 @@
     $("kDays").textContent = fmt(daysSaved,0);
   }
 
-  function syncFromUrl() {
-    const params = new URLSearchParams(location.search);
-    const allIds = [
-      ...ids.n, ...ids.c, ...ids.m, ...ids.a, ...ids.cost,
-      "fte","prodGain","overallInc","avgSavedMin","useAvgForSummary"
-    ];
-    allIds.forEach(id => {
-      if (params.has(id)) {
-        if (id === "useAvgForSummary") {
-          $(id).checked = params.get(id) === "1" || (params.get(id)+"").toLowerCase()==="true";
-        } else {
-          $(id).value = params.get(id);
-        }
-      }
-    });
-  }
-
   ["nBasic","nMedium","nComplex","nVComplex","cBasic","cMedium","cComplex","cVComplex",
    "mBasic","mMedium","mComplex","mVComplex","aBasic","aMedium","aComplex","aVComplex",
    "costBasic","costMedium","costComplex","costVComplex","fte","prodGain","overallInc",
    "avgSavedMin","useAvgForSummary"].forEach(id=>{
-     $(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
+     document.getElementById(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
   });
 
-  syncFromUrl();
   calc();
 </script>
 </body>
