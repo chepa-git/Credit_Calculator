@@ -1,285 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI ROI Calculator</title>
-  <style>
-    :root {
-      --bg: #0f1320;
-      --panel: #141a2a;
-      --muted: #8ea0b8;
-      --text: #e6edf7;
-      --accent: #4cc38a;
-      --danger: #ff6b6b;
-      --border: #23304a;
-      --focus: #5eb0ef;
-    }
-    html, body {
-      margin: 0; padding: 0; background: var(--bg); color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    .wrap { max-width: 1100px; margin: 40px auto; padding: 0 16px; }
-    h1 { font-size: 28px; margin: 0 0 8px; }
-    .sub { color: var(--muted); margin-bottom: 24px; }
-    .grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-    }
-    @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
-    .card {
-      background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
-    }
-    .card h2 { margin-top: 0; font-size: 18px; }
-    .row { display: grid; grid-template-columns: 1fr 140px; gap: 12px; align-items: center; margin-bottom: 12px; }
-    .row label { color: var(--muted); font-size: 14px; }
-    .row input {
-      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
-      background: #0d1220; color: var(--text); outline: none;
-    }
-    .row input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(94,176,239,.15); }
-    .suffix { display: flex; align-items: center; gap: 6px; }
-    .suffix span { color: var(--muted); font-size: 13px; }
-    .note { color: var(--muted); font-size: 13px; margin-top: 6px; }
-    .results {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px;
-    }
-    @media (max-width: 880px) { .results { grid-template-columns: 1fr; } }
-    .kpi {
-      background: #0d1220; border: 1px dashed var(--border); border-radius: 10px; padding: 12px;
-    }
-    .kpi .label { color: var(--muted); font-size: 12px; margin-bottom: 6px; }
-    .kpi .value { font-size: 20px; font-weight: 700; }
-    .value.negative { color: var(--danger); }
-    .footer {
-      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;
-    }
-    button, .link {
-      background: #1a2338; color: var(--text); border: 1px solid var(--border); border-radius: 10px;
-      padding: 10px 14px; cursor: pointer;
-    }
-    button:hover, .link:hover { border-color: var(--focus); }
-    .muted { color: var(--muted); font-size: 12px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Agentic AI ROI (Excel-Exact)</title>
+<style>
+  :root{--bg:#0f1320;--panel:#141a2a;--muted:#92a2ba;--text:#e6edf7;--border:#23304a;--accent:#ffd166}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
+  h1{margin:0 0 8px;font-size:24px}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .card h2{margin:0 0 8px;font-size:16px}
+  .row{display:grid;grid-template-columns:1fr 140px 140px 140px 160px;gap:8px;align-items:center}
+  .row.head{color:var(--muted);font-size:12px}
+  .row input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#0c1120;color:var(--text)}
+  .muted{color:var(--muted);font-size:12px}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+  .kpi{background:#0c1120;border:1px dashed var(--border);border-radius:10px;padding:10px}
+  .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
+  .kpi .val{font-weight:700}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{border:1px solid var(--border);padding:8px;font-size:13px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:#0d1425;color:var(--muted)}
+  .hl{background:#3d2f00;color:#fff;font-weight:700}
+  .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  button{background:#1a2338;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>AI ROI Calculator</h1>
-    <div class="sub">Adjust assumptions to estimate Year 1 ROI, monthly payback, and annual savings. Share prefilled links via URL parameters.</div>
+<div class="wrap">
+  <h1>Agentic AI ROI Calculator (Excel-aligned)</h1>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Assumptions</h2>
+  <div class="grid">
+    <div class="card">
+      <h2>Inputs</h2>
 
-        <div class="row">
-          <label for="employees">Employees impacted</label>
-          <input id="employees" type="number" min="0" step="1" value="100" />
-        </div>
-
-        <div class="row">
-          <label for="wage">Average hourly wage</label>
-          <div class="suffix">
-            <input id="wage" type="number" min="0" step="1" value="40" />
-            <span>USD/hr</span>
-          </div>
-        </div>
-
-        <div class="row">
-          <label for="hours">Hours saved per employee per week</label>
-          <div class="suffix">
-            <input id="hours" type="number" min="0" step="0.1" value="1.0" />
-            <span>hrs</span>
-          </div>
-        </div>
-
-        <div class="row">
-          <label for="adoption">Adoption rate</label>
-          <div class="suffix">
-            <input id="adoption" type="number" min="0" max="1" step="0.05" value="0.7" />
-            <span>0–1</span>
-          </div>
-        </div>
-
-        <div class="row">
-          <label for="software">Software/platform cost per month</label>
-          <div class="suffix">
-            <input id="software" type="number" min="0" step="10" value="2500" />
-            <span>USD/mo</span>
-          </div>
-        </div>
-
-        <div class="row">
-          <label for="impl">One-time implementation cost</label>
-          <div class="suffix">
-            <input id="impl" type="number" min="0" step="100" value="20000" />
-            <span>USD</span>
-          </div>
-        </div>
-
-        <div class="note">
-          Tip: set <span class="mono">adoption</span> between 0 and 1 (e.g., 0.7 for 70%).
-        </div>
+      <div class="row head">
+        <div>Field</div><div>Basic</div><div>Medium</div><div>Complex</div><div>Very Complex</div>
       </div>
 
-      <div class="card">
-        <h2>Results</h2>
-        <div class="results">
-          <div class="kpi">
-            <div class="label">Year 1 ROI</div>
-            <div id="kpiRoi" class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Monthly Payback</div>
-            <div id="kpiPayback" class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Annual Net Benefit (Year 1)</div>
-            <div id="kpiNet" class="value">—</div>
-          </div>
-        </div>
-
-        <div class="results" style="margin-top: 8px;">
-          <div class="kpi">
-            <div class="label">Annual Hours Saved</div>
-            <div id="kpiHours" class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Annual Labor Savings</div>
-            <div id="kpiLabor" class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Year 1 Total Cost</div>
-            <div id="kpiCost" class="value">—</div>
-          </div>
-        </div>
-
-        <div class="footer">
-          <button id="share">Copy shareable link</button>
-          <span id="shareStatus" class="muted"></span>
-        </div>
-        <div class="note">Shareable parameters: <span class="mono">employees, wage, hours, adoption, software, impl</span></div>
+      <div class="row">
+        <div>no of Testcases</div>
+        <input id="nBasic" type="number" value="110" min="0" step="1"/>
+        <input id="nMedium" type="number" value="150" min="0" step="1"/>
+        <input id="nComplex" type="number" value="250" min="0" step="1"/>
+        <input id="nVComplex" type="number" value="250" min="0" step="1"/>
       </div>
+
+      <div class="row">
+        <div>Credits per test</div>
+        <input id="cBasic" type="number" value="15" min="0" step="1"/>
+        <input id="cMedium" type="number" value="30" min="0" step="1"/>
+        <input id="cComplex" type="number" value="100" min="0" step="1"/>
+        <input id="cVComplex" type="number" value="650" min="0" step="1"/>
+      </div>
+
+      <div class="flex" style="margin-top:10px">
+        <label>FTE Rate ($/hr) <input id="fte" type="number" value="35" min="0" step="0.01" style="width:120px;margin-left:6px"></label>
+        <label>Productivity Gain (%) <input id="prodGain" type="number" value="85" min="0" max="100" step="1" style="width:120px;margin-left:6px"></label>
+        <label>Overall Productivity Increase (%) <input id="overallInc" type="number" value="60" min="0" max="100" step="1" style="width:120px;margin-left:6px"></label>
+        <label>Avg Time Saved per Test (min) <input id="avgSavedMin" type="number" value="30" min="0" step="1" style="width:120px;margin-left:6px"></label>
+        <label><input id="useAvgForSummary" type="checkbox" checked style="margin-right:6px">Use Avg Time Saved for summary</label>
+      </div>
+
+      <h2 style="margin-top:12px">Per Test Type (as in sheet)</h2>
+      <div class="row head">
+        <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Agentic Cost ($)</div><div></div>
+      </div>
+      <div class="row">
+        <div>Basic</div>
+        <input id="mBasic" type="number" value="30" min="0" step="1"/>
+        <input id="aBasic" type="number" value="5" min="0" step="1"/>
+        <input id="costBasic" type="number" value="10" min="0" step="0.01"/>
+        <div></div>
+      </div>
+      <div class="row">
+        <div>Medium</div>
+        <input id="mMedium" type="number" value="45" min="0" step="1"/>
+        <input id="aMedium" type="number" value="5" min="0" step="1"/>
+        <input id="costMedium" type="number" value="15" min="0" step="0.01"/>
+        <div></div>
+      </div>
+      <div class="row">
+        <div>Complex</div>
+        <input id="mComplex" type="number" value="120" min="0" step="1"/>
+        <input id="aComplex" type="number" value="25" min="0" step="1"/>
+        <input id="costComplex" type="number" value="45" min="0" step="0.01"/>
+        <div></div>
+      </div>
+      <div class="row">
+        <div>Very Complex</div>
+        <input id="mVComplex" type="number" value="300" min="0" step="1"/>
+        <input id="aVComplex" type="number" value="35" min="0" step="1"/>
+        <input id="costVComplex" type="number" value="100" min="0" step="0.01"/>
+        <div></div>
+      </div>
+
+      <div class="flex" style="margin-top:10px">
+        <button id="share">Copy shareable link</button>
+        <span id="shareStatus" class="muted"></span>
+      </div>
+      <div class="muted">URL params: nBasic, nMedium, nComplex, nVComplex, cBasic, cMedium, cComplex, cVComplex, fte, prodGain, overallInc, avgSavedMin, mBasic, aBasic, costBasic, mMedium, aMedium, costMedium, mComplex, aComplex, costComplex, mVComplex, aVComplex, costVComplex, useAvgForSummary</div>
     </div>
 
-    <div class="card" style="margin-top:16px;">
-      <h2>Formula details</h2>
-      <div class="muted">
-        AnnualHoursSaved = Employees × HoursPerWeek × 52 × Adoption<br/>
-        AnnualLaborSavings = AnnualHoursSaved × HourlyWage<br/>
-        AnnualSoftwareCost = SoftwarePerMonth × 12<br/>
-        Year1TotalCost = AnnualSoftwareCost + Implementation<br/>
-        Year1NetBenefit = AnnualLaborSavings − Year1TotalCost<br/>
-        Year1ROI% = (Year1NetBenefit ÷ Year1TotalCost) × 100<br/>
-        PaybackMonths = Implementation ÷ max((AnnualLaborSavings − AnnualSoftwareCost)/12, 0.0001)
+    <div class="card">
+      <h2>Sheet Calculations</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Test Type</th>
+            <th>Manual Time (min)</th>
+            <th>Agentic Time (min)</th>
+            <th>Agentic Cost ($)</th>
+            <th>Manual Cost ($)</th>
+            <th>Time Saved (min)</th>
+            <th>Time Cost Saved ($)</th>
+            <th>Productivity Gain (%)</th>
+            <th>ROI (%)</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+        <tfoot>
+          <tr>
+            <th colspan="4" class="hl">Total credits required</th>
+            <th colspan="5" id="totalCredits" class="hl" style="text-align:right"></th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Avg ROI per Test (%)</div><div id="kAvgRoi" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Days Saved</div><div id="kDays" class="val">—</div></div>
+      </div>
+
+      <div class="muted" style="margin-top:10px">
+        Row math (matches your sheet):
+        ManualCost = ManualTime/60 × FTE; TimeSaved = ManualTime − AgenticTime; TimeCostSaved = ManualCost − AgenticCost; ROI% = (TimeCostSaved ÷ AgenticCost) × 100; Per-row Productivity Gain% = global input.<br/>
+        Summary: choose if you want to use the Avg Time Saved input (checkbox) or sum per-type TimeSaved for totals.
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
+<script>
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n, d=2) => Number.isFinite(n) ? n.toLocaleString(undefined,{maximumFractionDigits:d}) : "—";
+  const money = (n) => Number.isFinite(n) ? n.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0}) : "—";
 
-    function toNumber(inputId, fallback) {
-      const raw = $(inputId).value.trim();
-      const value = Number(raw);
-      return Number.isFinite(value) ? value : fallback;
-    }
+  const TYPES = ["Basic","Medium","Complex","Very Complex"];
+  const ids = {
+    n:["nBasic","nMedium","nComplex","nVComplex"],
+    c:["cBasic","cMedium","cComplex","cVComplex"],
+    m:["mBasic","mMedium","mComplex","mVComplex"],
+    a:["aBasic","aMedium","aComplex","aVComplex"],
+    cost:["costBasic","costMedium","costComplex","costVComplex"]
+  };
 
-    function fmtMoney(n) {
-      if (!Number.isFinite(n)) return "—";
-      const sign = n < 0 ? "-" : "";
-      const abs = Math.abs(n);
-      return sign + abs.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-    }
+  function readInputs() {
+    const get = (id)=> Number($(id).value);
+    const fte = Number($("fte").value) || 0;
+    const prodGain = Number($("prodGain").value) || 0;
+    const overallInc = Number($("overallInc").value) || 0;
+    const avgSavedMin = Number($("avgSavedMin").value) || 0;
+    const useAvg = $("useAvgForSummary").checked;
 
-    function fmtNumber(n) {
-      if (!Number.isFinite(n)) return "—";
-      return n.toLocaleString();
-    }
+    const n = ids.n.map(get);
+    const c = ids.c.map(get);
+    const m = ids.m.map(get);
+    const a = ids.a.map(get);
+    const cost = ids.cost.map(get);
 
-    function fmtPercent(n) {
-      if (!Number.isFinite(n)) return "—";
-      return n.toLocaleString(undefined, { maximumFractionDigits: 1 }) + "%";
-    }
+    return {fte, prodGain, overallInc, avgSavedMin, useAvg, n, c, m, a, cost};
+  }
 
-    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+  function calc() {
+    const x = readInputs();
+    const tbody = $("rows");
+    tbody.innerHTML = "";
 
-    function calculate() {
-      const employees = Math.max(0, Math.floor(toNumber("employees", 0)));
-      const wage = Math.max(0, toNumber("wage", 0));
-      const hoursPerWeek = Math.max(0, toNumber("hours", 0));
-      const adoption = clamp(toNumber("adoption", 1), 0, 1);
-      const softwarePerMonth = Math.max(0, toNumber("software", 0));
-      const implementation = Math.max(0, toNumber("impl", 0));
+    let totalCredits = 0;
+    let totalTests = x.n.reduce((s,v)=>s+(v||0),0);
 
-      const annualHoursSaved = employees * hoursPerWeek * 52 * adoption;
-      const annualLaborSavings = annualHoursSaved * wage;
-      const annualSoftwareCost = softwarePerMonth * 12;
-      const year1TotalCost = annualSoftwareCost + implementation;
-      const year1NetBenefit = annualLaborSavings - year1TotalCost;
-      const monthlyNet = (annualLaborSavings - annualSoftwareCost) / 12;
-      const paybackMonths = implementation > 0 ? (implementation / Math.max(monthlyNet, 0.0001)) : 0;
-      const roiPct = year1TotalCost > 0 ? (year1NetBenefit / year1TotalCost) * 100 : 0;
+    let roiList = [];
+    let totalTimeSavedMinutesByType = 0;
 
-      // Update UI
-      const roiEl = $("kpiRoi");
-      const paybackEl = $("kpiPayback");
-      const netEl = $("kpiNet");
-      const hoursEl = $("kpiHours");
-      const laborEl = $("kpiLabor");
-      const costEl = $("kpiCost");
+    TYPES.forEach((name, i) => {
+      const manualTime = Math.max(0, x.m[i]||0);
+      const agenticTime = Math.max(0, x.a[i]||0);
+      const agenticCost = Math.max(0, x.cost[i]||0);
+      const qty = Math.max(0, x.n[i]||0);
+      const creditsPerTest = Math.max(0, x.c[i]||0);
 
-      roiEl.textContent = fmtPercent(roiPct);
-      paybackEl.textContent = Number.isFinite(paybackMonths) ? (paybackMonths < 0 ? "Immediate" : paybackMonths.toFixed(1) + " mo") : "—";
-      netEl.textContent = fmtMoney(year1NetBenefit);
-      netEl.classList.toggle("negative", year1NetBenefit < 0);
+      const manualCost = (manualTime/60) * x.fte;
+      const timeSavedMin = Math.max(0, manualTime - agenticTime);
+      const timeCostSaved = manualCost - agenticCost;
+      const roiPct = agenticCost > 0 ? (timeCostSaved/agenticCost)*100 : 0;
 
-      hoursEl.textContent = fmtNumber(Math.round(annualHoursSaved));
-      laborEl.textContent = fmtMoney(annualLaborSavings);
-      costEl.textContent = fmtMoney(year1TotalCost);
-    }
+      totalCredits += qty * creditsPerTest;
+      totalTimeSavedMinutesByType += qty * timeSavedMin;
+      roiList.push(roiPct);
 
-    function syncFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      const map = {
-        employees: "employees",
-        wage: "wage",
-        hours: "hours",
-        adoption: "adoption",
-        software: "software",
-        impl: "impl",
-      };
-      for (const [key, id] of Object.entries(map)) {
-        if (params.has(key)) {
-          $(id).value = params.get(key);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${name}</td>
+        <td>${fmt(manualTime,0)}</td>
+        <td>${fmt(agenticTime,0)}</td>
+        <td>${money(agenticCost)}</td>
+        <td>${money(manualCost)}</td>
+        <td>${fmt(timeSavedMin,0)}</td>
+        <td>${money(timeCostSaved)}</td>
+        <td>${fmt(x.prodGain,0)}</td>
+        <td>${fmt(roiPct,2)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Summary
+    const avgRoi = roiList.length ? roiList.reduce((s,v)=>s+v,0)/roiList.length : 0;
+
+    const avgSavedPerTestMin = x.avgSavedMin; // explicit input (matches your yellow card)
+    const totalSavedMinutes = x.useAvg
+      ? totalTests * avgSavedPerTestMin
+      : totalTimeSavedMinutesByType;
+
+    const totalSavedHours = totalSavedMinutes / 60;
+    const totalCostSaved = totalSavedHours * x.fte;
+    const daysSaved = totalSavedHours / 8;
+
+    $("totalCredits").textContent = fmt(totalCredits,0);
+    $("kNum").textContent = fmt(totalTests,0);
+    $("kAvgMin").textContent = fmt(avgSavedPerTestMin,0);
+    $("kHours").textContent = fmt(totalSavedHours,0);
+    $("kSaved").textContent = money(totalCostSaved);
+    $("kAvgRoi").textContent = fmt(avgRoi,2);
+    $("kDays").textContent = fmt(daysSaved,0);
+  }
+
+  function syncFromUrl() {
+    const params = new URLSearchParams(location.search);
+    const allIds = [
+      ...ids.n, ...ids.c, ...ids.m, ...ids.a, ...ids.cost,
+      "fte","prodGain","overallInc","avgSavedMin","useAvgForSummary"
+    ];
+    allIds.forEach(id => {
+      if (params.has(id)) {
+        if (id === "useAvgForSummary") {
+          $(id).checked = params.get(id) === "1" || params.get(id).toLowerCase()==="true";
+        } else {
+          $(id).value = params.get(id);
         }
       }
-      calculate();
-    }
-
-    function copyShareLink() {
-      const params = new URLSearchParams({
-        employees: $( "employees").value,
-        wage: $( "wage").value,
-        hours: $( "hours").value,
-        adoption: $( "adoption").value,
-        software: $( "software").value,
-        impl: $( "impl").value,
-      });
-      const url = `${location.origin}${location.pathname}?${params.toString()}`;
-      navigator.clipboard.writeText(url)
-        .then(() => { $("shareStatus").textContent = "Link copied"; setTimeout(() => $("shareStatus").textContent = "", 2000); })
-        .catch(() => { $("shareStatus").textContent = "Copy failed"; setTimeout(() => $("shareStatus").textContent = "", 2000); });
-    }
-
-    // Events
-    ["employees","wage","hours","adoption","software","impl"].forEach(id => {
-      $(id).addEventListener("input", calculate);
-      $(id).addEventListener("change", calculate);
     });
-    $("share").addEventListener("click", copyShareLink);
+  }
 
-    // Init
-    syncFromUrl();
-  </script>
+  function share() {
+    const p = new URLSearchParams();
+    const set = (id,val)=>p.set(id,String(val));
+    const x = readInputs();
+    ids.n.forEach((id,i)=>set(id,$(id).value));
+    ids.c.forEach((id,i)=>set(id,$(id).value));
+    ids.m.forEach((id,i)=>set(id,$(id).value));
+    ids.a.forEach((id,i)=>set(id,$(id).value));
+    ids.cost.forEach((id,i)=>set(id,$(id).value));
+    ["fte","prodGain","overallInc","avgSavedMin"].forEach(id=>set(id,$(id).value));
+    set("useAvgForSummary", x.useAvg ? "1" : "0");
+    const url = `${location.origin}${location.pathname}?${p.toString()}`;
+    navigator.clipboard.writeText(url).then(()=>{
+      $("shareStatus").textContent="Link copied";
+      setTimeout(()=>$("shareStatus").textContent="",2000);
+    },()=>{
+      $("shareStatus").textContent="Copy failed";
+      setTimeout(()=>$("shareStatus").textContent="",2000);
+    });
+  }
+
+  ["nBasic","nMedium","nComplex","nVComplex","cBasic","cMedium","cComplex","cVComplex",
+   "mBasic","mMedium","mComplex","mVComplex","aBasic","aMedium","aComplex","aVComplex",
+   "costBasic","costMedium","costComplex","costVComplex","fte","prodGain","overallInc",
+   "avgSavedMin","useAvgForSummary"].forEach(id=>{
+     $(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
+  });
+  $("share").addEventListener("click",share);
+
+  syncFromUrl();
+  calc();
+</script>
 </body>
 </html>
