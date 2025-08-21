@@ -5,34 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Agentic AI ROI (Excel-Exact)</title>
 <style>
-  :root{--bg:#0f1320;--panel:#141a2a;--muted:#92a2ba;--text:#e6edf7;--border:#23304a;--accent:#ffd166}
-  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  :root{
+    --pumpkin:#FF6C0E;
+    --cerulean:#0087AE;
+    --biscay:#1B365D;
+    --biscay-900:#162d50;
+    --biscay-950:#0f223f;
+    --text:#F7FAFF;
+    --muted:#C6D6E6;
+    --border:rgba(255,255,255,.12);
+  }
+  html,body{margin:0;background:linear-gradient(180deg,var(--biscay) 0%, var(--biscay-950) 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
   .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
-  h1{margin:0 0 8px;font-size:24px}
+  h1{margin:0 0 12px;font-size:24px}
   .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
   @media (max-width:980px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
-  .card h2{margin:0 0 8px;font-size:16px}
+  .card{background:var(--biscay-900);border:1px solid var(--border);border-radius:14px;padding:16px}
+  .card h2{margin:0 0 10px;font-size:16px}
+
+  /* Inputs */
   .row{display:grid;grid-template-columns:1fr 140px 140px 140px 160px;gap:8px;align-items:center}
   .row.head{color:var(--muted);font-size:12px}
-  .row input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#0c1120;color:var(--text)}
-  .muted{color:var(--muted);font-size:12px}
-  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
-  .kpi{background:#0c1120;border:1px dashed var(--border);border-radius:10px;padding:10px}
-  .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
-  .kpi .val{font-weight:700}
+  input[type="number"]{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+    background:var(--biscay-950);color:var(--text)
+  }
+  input[type="number"]:focus{outline:2px solid var(--cerulean);border-color:transparent}
+
+  .inputs-grid{
+    display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;margin-top:12px
+  }
+  @media (max-width:980px){.inputs-grid{grid-template-columns:repeat(2,minmax(180px,1fr))}}
+  .ig{
+    background:linear-gradient(180deg,rgba(0,135,174,.15),rgba(0,135,174,.05));
+    border:1px solid rgba(0,135,174,.45);border-radius:12px;padding:10px
+  }
+  .ig label{display:block;font-size:12px;color:#e6f8ff;margin-bottom:6px}
+  .ig input{width:100%}
+
+  /* Table */
   table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{border:1px solid var(--border);padding:8px;font-size:13px;text-align:right}
+  th,td{border:1px solid var(--border);padding:10px 8px;font-size:13px;text-align:right;background:var(--biscay-950)}
   th:first-child,td:first-child{text-align:left}
-  th{background:#0d1425;color:var(--muted)}
-  .hl{background:#3d2f00;color:#fff;font-weight:700}
-  .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  button{background:#1a2338;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer}
+  thead th{
+    background:linear-gradient(180deg,rgba(0,135,174,.55),rgba(0,135,174,.25));
+    color:#f1fbff;border-color:rgba(0,135,174,.55)
+  }
+  tfoot th{
+    background:linear-gradient(180deg,rgba(255,108,14,.60),rgba(255,108,14,.30));
+    color:#fff;border-color:rgba(255,108,14,.7)
+  }
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+  .kpi{background:var(--biscay-950);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
+  .kpi .val{font-weight:800;font-size:18px}
+  .kpi.hl{
+    background:linear-gradient(180deg,rgba(255,108,14,.18),rgba(255,108,14,.07));
+    border-color:rgba(255,108,14,.55)
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Agentic AI ROI Calculator (Excel-aligned)</h1>
+  <h1>Agentic AI ROI Calculator</h1>
 
   <div class="grid">
     <div class="card">
@@ -58,56 +95,45 @@
         <input id="cVComplex" type="number" value="650" min="0" step="1"/>
       </div>
 
-      <div class="flex" style="margin-top:10px">
-        <label>FTE Rate ($/hr) <input id="fte" type="number" value="35" min="0" step="0.01" style="width:120px;margin-left:6px"></label>
-        <label>Productivity Gain (%) <input id="prodGain" type="number" value="85" min="0" max="100" step="1" style="width:120px;margin-left:6px"></label>
-        <label>Overall Productivity Increase (%) <input id="overallInc" type="number" value="60" min="0" max="100" step="1" style="width:120px;margin-left:6px"></label>
-        <label>Avg Time Saved per Test (min) <input id="avgSavedMin" type="number" value="30" min="0" step="1" style="width:120px;margin-left:6px"></label>
-        <label><input id="useAvgForSummary" type="checkbox" checked style="margin-right:6px">Use Avg Time Saved for summary</label>
-      </div>
-
-      <h2 style="margin-top:12px">Per Test Type (as in sheet)</h2>
-      <div class="row head">
+      <div class="row head" style="margin-top:10px">
         <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Agentic Cost ($)</div><div></div>
       </div>
       <div class="row">
         <div>Basic</div>
         <input id="mBasic" type="number" value="30" min="0" step="1"/>
         <input id="aBasic" type="number" value="5" min="0" step="1"/>
-        <input id="costBasic" type="number" value="10" min="0" step="0.01"/>
-        <div></div>
+        <input id="costBasic" type="number" value="10" min="0" step="0.01"/><div></div>
       </div>
       <div class="row">
         <div>Medium</div>
         <input id="mMedium" type="number" value="45" min="0" step="1"/>
         <input id="aMedium" type="number" value="5" min="0" step="1"/>
-        <input id="costMedium" type="number" value="15" min="0" step="0.01"/>
-        <div></div>
+        <input id="costMedium" type="number" value="15" min="0" step="0.01"/><div></div>
       </div>
       <div class="row">
         <div>Complex</div>
         <input id="mComplex" type="number" value="120" min="0" step="1"/>
         <input id="aComplex" type="number" value="25" min="0" step="1"/>
-        <input id="costComplex" type="number" value="45" min="0" step="0.01"/>
-        <div></div>
+        <input id="costComplex" type="number" value="45" min="0" step="0.01"/><div></div>
       </div>
       <div class="row">
         <div>Very Complex</div>
         <input id="mVComplex" type="number" value="300" min="0" step="1"/>
         <input id="aVComplex" type="number" value="35" min="0" step="1"/>
-        <input id="costVComplex" type="number" value="100" min="0" step="0.01"/>
-        <div></div>
+        <input id="costVComplex" type="number" value="100" min="0" step="0.01"/><div></div>
       </div>
 
-      <div class="flex" style="margin-top:10px">
-        <button id="share">Copy shareable link</button>
-        <span id="shareStatus" class="muted"></span>
+      <div class="inputs-grid">
+        <div class="ig"><label>FTE Rate ($/hr)</label><input id="fte" type="number" value="35" min="0" step="0.01"></div>
+        <div class="ig"><label>Productivity Gain (%)</label><input id="prodGain" type="number" value="85" min="0" max="100" step="1"></div>
+        <div class="ig"><label>Overall Productivity Increase (%)</label><input id="overallInc" type="number" value="60" min="0" max="100" step="1"></div>
+        <div class="ig"><label>Avg Time Saved per Test (min)</label><input id="avgSavedMin" type="number" value="30" min="0" step="1"></div>
+        <div class="ig" style="grid-column: span 2"><label>Use Avg Time Saved for totals</label><input id="useAvgForSummary" type="checkbox" checked></div>
       </div>
-      <div class="muted">URL params: nBasic, nMedium, nComplex, nVComplex, cBasic, cMedium, cComplex, cVComplex, fte, prodGain, overallInc, avgSavedMin, mBasic, aBasic, costBasic, mMedium, aMedium, costMedium, mComplex, aComplex, costComplex, mVComplex, aVComplex, costVComplex, useAvgForSummary</div>
     </div>
 
     <div class="card">
-      <h2>Sheet Calculations</h2>
+      <h2>Results</h2>
 
       <table>
         <thead>
@@ -126,25 +152,19 @@
         <tbody id="rows"></tbody>
         <tfoot>
           <tr>
-            <th colspan="4" class="hl">Total credits required</th>
-            <th colspan="5" id="totalCredits" class="hl" style="text-align:right"></th>
+            <th colspan="4">Total credits required</th>
+            <th colspan="5" id="totalCredits" style="text-align:right"></th>
           </tr>
         </tfoot>
       </table>
 
       <div class="kpis">
-        <div class="kpi"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
+        <div class="kpi hl"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
+        <div class="kpi hl"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg ROI per Test (%)</div><div id="kAvgRoi" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Days Saved</div><div id="kDays" class="val">—</div></div>
-      </div>
-
-      <div class="muted" style="margin-top:10px">
-        Row math (matches your sheet):
-        ManualCost = ManualTime/60 × FTE; TimeSaved = ManualTime − AgenticTime; TimeCostSaved = ManualCost − AgenticCost; ROI% = (TimeCostSaved ÷ AgenticCost) × 100; Per-row Productivity Gain% = global input.<br/>
-        Summary: choose if you want to use the Avg Time Saved input (checkbox) or sum per-type TimeSaved for totals.
       </div>
     </div>
   </div>
@@ -223,10 +243,9 @@
       tbody.appendChild(tr);
     });
 
-    // Summary
     const avgRoi = roiList.length ? roiList.reduce((s,v)=>s+v,0)/roiList.length : 0;
 
-    const avgSavedPerTestMin = x.avgSavedMin; // explicit input (matches your yellow card)
+    const avgSavedPerTestMin = x.avgSavedMin;
     const totalSavedMinutes = x.useAvg
       ? totalTests * avgSavedPerTestMin
       : totalTimeSavedMinutesByType;
@@ -253,32 +272,11 @@
     allIds.forEach(id => {
       if (params.has(id)) {
         if (id === "useAvgForSummary") {
-          $(id).checked = params.get(id) === "1" || params.get(id).toLowerCase()==="true";
+          $(id).checked = params.get(id) === "1" || (params.get(id)+"").toLowerCase()==="true";
         } else {
           $(id).value = params.get(id);
         }
       }
-    });
-  }
-
-  function share() {
-    const p = new URLSearchParams();
-    const set = (id,val)=>p.set(id,String(val));
-    const x = readInputs();
-    ids.n.forEach((id,i)=>set(id,$(id).value));
-    ids.c.forEach((id,i)=>set(id,$(id).value));
-    ids.m.forEach((id,i)=>set(id,$(id).value));
-    ids.a.forEach((id,i)=>set(id,$(id).value));
-    ids.cost.forEach((id,i)=>set(id,$(id).value));
-    ["fte","prodGain","overallInc","avgSavedMin"].forEach(id=>set(id,$(id).value));
-    set("useAvgForSummary", x.useAvg ? "1" : "0");
-    const url = `${location.origin}${location.pathname}?${p.toString()}`;
-    navigator.clipboard.writeText(url).then(()=>{
-      $("shareStatus").textContent="Link copied";
-      setTimeout(()=>$("shareStatus").textContent="",2000);
-    },()=>{
-      $("shareStatus").textContent="Copy failed";
-      setTimeout(()=>$("shareStatus").textContent="",2000);
     });
   }
 
@@ -288,7 +286,6 @@
    "avgSavedMin","useAvgForSummary"].forEach(id=>{
      $(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
   });
-  $("share").addEventListener("click",share);
 
   syncFromUrl();
   calc();
