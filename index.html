@@ -59,7 +59,6 @@
   tbody tr:nth-child(odd) td{background:rgba(255,255,255,.04)}
   tbody tr:nth-child(even) td{background:rgba(0,0,0,.10)}
   tbody td:last-child, thead th:last-child, tfoot th:last-child{border-right:none}
-  /* Hide footer total; shown as KPI instead */
   tfoot{display:none}
 
   /* KPIs */
@@ -73,13 +72,13 @@
   #resultsTable{display:none}
 
   /* Hide Agentic Cost inputs column (+ trailing spacer) only for Test Type rows */
-  .row.testtype > :nth-child(4),
-  .row.head.testtype > :nth-child(4){display:none}
   .row.testtype > :nth-child(5),
   .row.head.testtype > :nth-child(5){display:none}
+  .row.testtype > :nth-child(6),
+  .row.head.testtype > :nth-child(6){display:none}
 
-  /* Tighten grid for those rows (Field | Manual | Agentic) */
-  .row.testtype{grid-template-columns:1fr 140px 140px}
+  /* Tighten grid for those rows (Field | Manual | Agentic | Saved) */
+  .row.testtype{grid-template-columns:1fr 140px 140px 140px}
 
   /* Remove space between Test Type and Manual Time columns */
   .row.testtype,
@@ -115,30 +114,34 @@
       </div>
 
       <div class="row head testtype" style="margin-top:10px">
-        <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Agentic Cost ($)</div><div></div>
+        <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Time Saved (min)</div><div>Agentic Cost ($)</div><div></div>
       </div>
       <div class="row testtype">
         <div>Basic</div>
         <input id="mBasic" type="number" value="30" min="0" step="1"/>
         <input id="aBasic" type="number" value="5" min="0" step="1"/>
+        <div id="tsBasic">—</div>
         <input id="costBasic" type="number" value="10" min="0" step="0.01"/><div></div>
       </div>
       <div class="row testtype">
         <div>Medium</div>
         <input id="mMedium" type="number" value="45" min="0" step="1"/>
         <input id="aMedium" type="number" value="5" min="0" step="1"/>
+        <div id="tsMedium">—</div>
         <input id="costMedium" type="number" value="15" min="0" step="0.01"/><div></div>
       </div>
       <div class="row testtype">
         <div>Complex</div>
         <input id="mComplex" type="number" value="120" min="0" step="1"/>
         <input id="aComplex" type="number" value="25" min="0" step="1"/>
+        <div id="tsComplex">—</div>
         <input id="costComplex" type="number" value="45" min="0" step="0.01"/><div></div>
       </div>
       <div class="row testtype">
         <div>Very Complex</div>
         <input id="mVComplex" type="number" value="300" min="0" step="1"/>
         <input id="aVComplex" type="number" value="35" min="0" step="1"/>
+        <div id="tsVComplex">—</div>
         <input id="costVComplex" type="number" value="100" min="0" step="0.01"/><div></div>
       </div>
 
@@ -175,7 +178,7 @@
       <div class="kpis">
         <div class="kpi hl"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
         <div class="kpi hl"><div class="lbl">Total Credits Required</div><div id="kCredits" class="val">—</div></div>
-        <div class="kpi hl"><div class="lbl">Total Pack Needed (1 Pack = 24K Credits)</div><div id="kPacks" class="val">—</div></div>
+        <div class="kpi hl"><div class="lbl">Packs Needed (24,000 credits/pack)</div><div id="kPacks" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
@@ -197,7 +200,8 @@
     c:["cBasic","cMedium","cComplex","cVComplex"],
     m:["mBasic","mMedium","mComplex","mVComplex"],
     a:["aBasic","aMedium","aComplex","aVComplex"],
-    cost:["costBasic","costMedium","costComplex","costVComplex"]
+    cost:["costBasic","costMedium","costComplex","costVComplex"],
+    ts:["tsBasic","tsMedium","tsComplex","tsVComplex"]
   };
 
   function readInputs() {
@@ -257,6 +261,9 @@
         <td>${fmt(roiPct,2)}</td>
       `;
       tbody.appendChild(tr);
+
+      const tsCell = $(ids.ts[i]);
+      if (tsCell) tsCell.textContent = fmt(timeSavedMin,0);
     });
 
     const avgRoi = roiList.length ? roiList.reduce((s,v)=>s+v,0)/roiList.length : 0;
