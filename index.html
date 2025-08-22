@@ -83,6 +83,20 @@
   .row.testtype{grid-template-columns:1fr 140px 140px 140px 160px}
   .row.head.testtype{grid-template-columns:1fr 140px 140px 140px 160px}
   .row.testtype, .row.head.testtype{column-gap:0}
+
+  /* Benefits + palette */
+  .benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+  .benefit-card{background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .benefit-card .lbl{color:var(--muted);font-size:12px;margin-bottom:6px}
+  .typed-list{margin:0 0 0 16px;padding:0}
+  .typed-list li{margin:6px 0}
+
+  .palette{grid-column:1 / -1;background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .palette .lbl{color:var(--muted);font-size:12px;margin-bottom:6px}
+  .palette-wrap{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:rgba(255,255,255,.06);border-radius:8px;padding:6px 8px}
+  .chip .sw{width:16px;height:16px;border-radius:4px;background:var(--chip);border:1px solid rgba(0,0,0,.25)}
+  .chip .code{font-size:12px;color:#e9eef7}
 </style>
 </head>
 <body>
@@ -113,7 +127,7 @@
         <input id="cVComplex" type="number" value="650" min="0" step="1"/>
       </div>
 
-      <div class="row head testtype" style="margin-top:20px">
+      <div class="row head testtype" style="margin-top:10px">
         <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Time Saved (min)</div><div>Productivity Increased</div><div>Agentic Cost ($)</div><div></div>
       </div>
       <div class="row testtype">
@@ -155,7 +169,6 @@
         <div class="ig"><label>Overall Productivity Increase (%)</label><input id="overallInc" type="number" value="60" min="0" max="100" step="1"></div>
         <div class="ig"><label>Avg Time Saved per Test (min)</label><input id="avgSavedMin" type="number" value="30" min="0" step="1"></div>
 
-        <!-- Hidden and unchecked: Use Avg Time Saved for totals -->
         <div class="ig" style="grid-column: span 2; display:none">
           <label>Use Avg Time Saved for totals</label>
           <input id="useAvgForSummary" type="checkbox">
@@ -204,6 +217,22 @@
         <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg ROI per Test (%)</div><div id="kAvgRoi" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Days Saved</div><div id="kDays" class="val">—</div></div>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit-card">
+          <div class="lbl">Tangible Benefits</div>
+          <ul id="tangibleList" class="typed-list"></ul>
+        </div>
+        <div class="benefit-card">
+          <div class="lbl">Intangible Benefits</div>
+          <ul id="intangibleList" class="typed-list"></ul>
+        </div>
+
+        <div class="palette">
+          <div class="lbl">Palette</div>
+          <div id="palette" class="palette-wrap"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -313,6 +342,47 @@
     });
   }
 
+  function typeList(elId, items, speed=24){
+    const ul = $(elId);
+    ul.innerHTML = "";
+    let i = 0, j = 0, li = document.createElement("li");
+    ul.appendChild(li);
+    function step(){
+      if(i >= items.length) return;
+      const t = items[i];
+      li.textContent = t.slice(0, j+1);
+      j++;
+      if (j >= t.length){
+        i++; j = 0;
+        if (i < items.length){
+          li = document.createElement("li");
+          ul.appendChild(li);
+        } else {
+          return;
+        }
+      }
+      setTimeout(step, speed);
+    }
+    step();
+  }
+
+  function renderPalette(){
+    const PALETTE = [
+      {hex:"#0b5096",name:"dark blue"},
+      {hex:"#1c375d",name:"navy blue"},
+      {hex:"#416a98",name:"steel blue"},
+      {hex:"#0e88ae",name:"teal blue"},
+      {hex:"#5bc9e6",name:"sky blue"},
+      {hex:"#898e8d",name:"gray"},
+      {hex:"#d3d755",name:"lime yellow"},
+      {hex:"#f36d21",name:"orange"},
+      {hex:"#b62556",name:"magenta/pink"},
+      {hex:"#ffffff",name:"white"},
+    ];
+    const p = $("palette");
+    p.innerHTML = PALETTE.map(c=>`<div class="chip" title="${c.name}"><span class="sw" style="--chip:${c.hex}"></span><span class="code">${c.hex}</span></div>`).join("");
+  }
+
   function calc() {
     const x = readInputs();
     const tbody = $("rows");
@@ -415,8 +485,21 @@
      $(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
   });
 
+  // Initialize
   syncFromUrl();
   calc();
+  typeList("tangibleList",[
+    "Time and Cost Saving",
+    "Productivity Gain",
+    "Faster Time to Market",
+    "Improve Customer Experience"
+  ]);
+  typeList("intangibleList",[
+    "Improved Decision Making",
+    "Improved Employee satisfaction",
+    "Improved Innovations"
+  ]);
+  renderPalette();
 </script>
 </body>
 </html>
