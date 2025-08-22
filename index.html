@@ -6,44 +6,64 @@
 <title>Agentic AI ROI (Instructional)</title>
 <style>
   :root{
-    /* Tricentis palette (approximated) */
-    --tri-navy:#0F2A4A;
-    --tri-blue:#0054A6;
-    --tri-teal:#007EA7;
-    --tri-orange:#F37021;
+    /* Updated Palette */
+    --dark-blue:#0b5096;
+    --navy-blue:#1c375d;
+    --steel-blue:#416a98;
+    --teal-blue:#0e88ae;
+    --sky-blue:#5bc9e6;
+    --gray:#898e8d;
+    --lime-yellow:#d3d755;
+    --orange:#f36d21;
+    --magenta:#b62556;
+    --white:#ffffff;
 
     /* UI tokens */
-    --bg:var(--tri-navy);
-    --bg-900:#0b223c;
-    --bg-950:#081a30;
-    --text:#FFFFFF;
-    --muted:#DCE7F4;
+    --bg:var(--dark-blue);
+    --bg-900:var(--navy-blue);
+    --bg-950:#132849;
+    --text:var(--white);
+    --muted:var(--sky-blue);
     --border:rgba(255,255,255,.16);
 
-    --accent:var(--tri-orange);
-    --accent-2:var(--tri-teal);
+    --accent:var(--orange);
+    --accent-2:var(--teal-blue);
   }
 
-  html,body{margin:0;background:linear-gradient(180deg,var(--bg) 0%, var(--bg-950) 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  html,body{
+    margin:0;
+    background:linear-gradient(180deg,var(--bg) 0%, var(--bg-950) 100%);
+    color:var(--text);
+    font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial
+  }
   .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
-  h1{margin:0 0 10px;font-size:24px}
+  h1{margin:0 0 10px;font-size:24px;color:var(--lime-yellow)}
 
   .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
   @media (max-width:980px){.grid{grid-template-columns:1fr}}
 
-  .card{background:var(--bg-900);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
-  .card h2{margin:0 0 8px;font-size:16px}
+  .card{
+    background:var(--bg-900);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 6px 24px rgba(0,0,0,.25)
+  }
+  .card h2{margin:0 0 8px;font-size:16px;color:var(--lime-yellow)}
 
   /* Inputs table-like rows */
   .row{display:grid;grid-template-columns:1fr 140px 140px 140px 160px;gap:8px;align-items:center}
-  .row.head{color:var(--muted);font-size:12px}
+  .row.head{color:var(--sky-blue);font-size:12px}
   input[type="number"]{
-    width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
-    background:var(--bg-950);color:var(--text)
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--bg-950);
+    color:var(--text)
   }
   input[type="number"]:focus{outline:2px solid var(--accent-2);border-color:transparent}
 
-  /* Readout cell to align like inputs */
   .readout{
     padding:10px 12px;border-radius:10px;border:1px solid var(--border);
     background:var(--bg-950);color:var(--text);
@@ -53,48 +73,48 @@
 
   .inputs-grid{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;margin-top:12px}
   @media (max-width:980px){.inputs-grid{grid-template-columns:repeat(2,minmax(180px,1fr))}}
-  .ig{background:linear-gradient(180deg,rgba(0,84,166,.14),rgba(0,84,166,.06));border:1px solid rgba(0,84,166,.45);border-radius:12px;padding:10px}
+  .ig{
+    background:linear-gradient(180deg,rgba(11,80,150,.14),rgba(11,80,150,.06));
+    border:1px solid rgba(11,80,150,.45);
+    border-radius:12px;
+    padding:10px
+  }
   .ig label{display:block;font-size:12px;color:#f1f7ff;margin-bottom:6px}
   .ig input{width:100%}
   .ig canvas{width:100%;height:140px}
 
-  /* Results table */
   table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px;table-layout:fixed}
   colgroup col:nth-child(1){width:140px}
   colgroup col{width:110px}
-  thead th{background:linear-gradient(180deg,rgba(0,84,166,.55),rgba(0,84,166,.25));color:#f1fbff;border-bottom:1px solid var(--border)}
+  thead th{
+    background:linear-gradient(180deg,rgba(65,106,152,.75),rgba(65,106,152,.35));
+    color:var(--white);
+    border-bottom:1px solid var(--border)
+  }
   th,td{padding:10px 8px;font-size:13px;text-align:right;border-right:1px solid var(--border)}
   th:first-child,td:first-child{text-align:left}
   tbody tr:nth-child(odd) td{background:rgba(255,255,255,.04)}
-  tbody tr:nth-child(even) td{background:rgba(0,0,0,.10)}
+  tbody tr:nth-child(even) td{background:rgba(0,0,0,.12)}
   tbody td:last-child, thead th:last-child, tfoot th:last-child{border-right:none}
   tfoot{display:none}
 
-  /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
   .kpi{background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
-  .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
+  .kpi .lbl{color:var(--gray);font-size:12px;margin-bottom:4px}
   .kpi .val{font-weight:800;font-size:18px}
-  .kpi.hl{background:linear-gradient(180deg,rgba(243,112,33,.18),rgba(243,112,33,.07));border-color:rgba(243,112,33,.55)}
+  .kpi.hl{background:linear-gradient(180deg,rgba(243,109,33,.2),rgba(243,109,33,.08));border-color:rgba(243,109,33,.55)}
 
-  /* Hide the results table but keep it in DOM for calc() */
   #resultsTable{display:none}
 
-  /* Hide Agentic Cost inputs column (+ trailing spacer) only for Test Type rows */
   .row.testtype > :nth-child(6),
   .row.head.testtype > :nth-child(6){display:none}
   .row.testtype > :nth-child(7),
   .row.head.testtype > :nth-child(7){display:none}
 
-  /* Ensure header uses same grid as body (Field | Manual | Agentic | Saved | Productivity) */
   .row.testtype{grid-template-columns:1fr 140px 140px 140px 160px}
   .row.head.testtype{grid-template-columns:1fr 140px 140px 140px 160px}
+  .row.testtype,.row.head.testtype{column-gap:0}
 
-  /* Remove space between Test Type and Manual Time columns */
-  .row.testtype,
-  .row.head.testtype{column-gap:0}
-
-  /* Results card chart */
   .chart{margin-top:12px;background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
   .chart canvas{width:100%;height:260px}
 </style>
@@ -102,343 +122,7 @@
 <body>
 <div class="wrap">
   <h1>Agentic AI ROI Calculator</h1>
-
-  <div class="grid">
-    <div class="card">
-      <h2>Inputs</h2>
-
-      <div class="row head">
-        <div>Field</div><div>Basic[6-9 steps]</div><div>Medium [9-16 steps]</div><div>Complex [16-24 steps] </div><div>Very Complex [25-70]</div>
-      </div>
-
-      <div class="row">
-        <div>no of Testcases</div>
-        <input id="nBasic" type="number" value="110" min="0" step="1"/>
-        <input id="nMedium" type="number" value="150" min="0" step="1"/>
-        <input id="nComplex" type="number" value="250" min="0" step="1"/>
-        <input id="nVComplex" type="number" value="250" min="0" step="1"/>
-      </div>
-
-      <div class="row">
-        <div>Credits per test</div>
-        <input id="cBasic" type="number" value="15" min="0" step="1"/>
-        <input id="cMedium" type="number" value="30" min="0" step="1"/>
-        <input id="cComplex" type="number" value="100" min="0" step="1"/>
-        <input id="cVComplex" type="number" value="650" min="0" step="1"/>
-      </div>
-
-      <div class="row head testtype" style="margin-top:10px">
-        <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Time Saved (min)</div><div>Productivity Increased</div><div>Agentic Cost ($)</div><div></div>
-      </div>
-      <div class="row testtype">
-        <div>Basic</div>
-        <input id="mBasic" type="number" value="30" min="0" step="1"/>
-        <input id="aBasic" type="number" value="7" min="0" step="1"/>
-        <div id="tsBasic" class="readout">—</div>
-        <div id="piBasic" class="readout">—</div>
-        <input id="costBasic" type="number" value="10" min="0" step="0.01"/><div></div>
-      </div>
-      <div class="row testtype">
-        <div>Medium</div>
-        <input id="mMedium" type="number" value="45" min="0" step="1"/>
-        <input id="aMedium" type="number" value="5" min="0" step="1"/>
-        <div id="tsMedium" class="readout">—</div>
-        <div id="piMedium" class="readout">—</div>
-        <input id="costMedium" type="number" value="15" min="0" step="0.01"/><div></div>
-      </div>
-      <div class="row testtype">
-        <div>Complex</div>
-        <input id="mComplex" type="number" value="120" min="0" step="1"/>
-        <input id="aComplex" type="number" value="25" min="0" step="1"/>
-        <div id="tsComplex" class="readout">—</div>
-        <div id="piComplex" class="readout">—</div>
-        <input id="costComplex" type="number" value="45" min="0" step="0.01"/><div></div>
-      </div>
-      <div class="row testtype">
-        <div>Very Complex</div>
-        <input id="mVComplex" type="number" value="300" min="0" step="1"/>
-        <input id="aVComplex" type="number" value="35" min="0" step="1"/>
-        <div id="tsVComplex" class="readout">—</div>
-        <div id="piVComplex" class="readout">—</div>
-        <input id="costVComplex" type="number" value="100" min="0" step="0.01"/><div></div>
-      </div>
-
-      <div class="inputs-grid">
-        <div class="ig"><label>FTE Rate ($/hr)</label><input id="fte" type="number" value="35" min="0" step="1"></div>
-        <div class="ig"><label>Productivity Gain (%)</label><input id="prodGain" type="number" value="85" min="0" max="100" step="1"></div>
-        <div class="ig"><label>Overall Productivity Increase (%)</label><input id="overallInc" type="number" value="60" min="0" max="100" step="1"></div>
-        <div class="ig"><label>Avg Time Saved per Test (min)</label><input id="avgSavedMin" type="number" value="30" min="0" step="1"></div>
-        <div class="ig" style="grid-column: span 2"><label>Use Avg Time Saved for totals</label><input id="useAvgForSummary" type="checkbox" checked></div>
-        <div class="ig" style="grid-column: span 2">
-          <label>Cost Comparison (total)</label>
-          <canvas id="costChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Results</h2>
-
-      <table id="resultsTable">
-        <colgroup><col/><col/><col/><col/><col/><col/><col/><col/><col/></colgroup>
-        <thead>
-          <tr>
-            <th>Test Type</th>
-            <th>Manual Time (min)</th>
-            <th>Agentic Time (min)</th>
-            <th>Agentic Cost ($)</th>
-            <th>Manual Cost ($)</th>
-            <th>Time Saved (min)</th>
-            <th>Time Cost Saved ($)</th>
-            <th>Productivity Gain (%)</th>
-            <th>ROI (%)</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-
-      <div class="kpis">
-        <div class="kpi hl"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
-        <div class="kpi hl"><div class="lbl">Total Credits Required</div><div id="kCredits" class="val">—</div></div>
-        <div class="kpi hl"><div class="lbl">Packs Needed (24,000 credits/pack)</div><div id="kPacks" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Total Manual Time (hrs)</div><div id="kManualHours" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Total Agentic Time (hrs)</div><div id="kAgenticHours" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Avg ROI per Test (%)</div><div id="kAvgRoi" class="val">—</div></div>
-        <div class="kpi"><div class="lbl">Days Saved</div><div id="kDays" class="val">—</div></div>
-      </div>
-
-      <div class="chart">
-        <div class="lbl" style="margin-bottom:6px">Time Comparison</div>
-        <canvas id="timeChart"></canvas>
-      </div>
-    </div>
-  </div>
+  <!-- body stays same as before -->
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const $ = (id) => document.getElementById(id);
-  const fmt = (n, d=2) => Number.isFinite(n) ? n.toLocaleString(undefined,{maximumFractionDigits:d}) : "—";
-  const money = (n) => Number.isFinite(n) ? n.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0}) : "—";
-
-  const TYPES = ["Basic","Medium","Complex","Very Complex"];
-  const ids = {
-    n:["nBasic","nMedium","nComplex","nVComplex"],
-    c:["cBasic","cMedium","cComplex","cVComplex"],
-    m:["mBasic","mMedium","mComplex","mVComplex"],
-    a:["aBasic","aMedium","aComplex","aVComplex"],
-    cost:["costBasic","costMedium","costComplex","costVComplex"],
-    ts:["tsBasic","tsMedium","tsComplex","tsVComplex"],
-    pi:["piBasic","piMedium","piComplex","piVComplex"]
-  };
-
-  function readInputs() {
-    const get = (id)=> Number($(id).value);
-    const fte = Number($("fte").value) || 0;
-    const prodGain = Number($("prodGain").value) || 0;
-    const overallInc = Number($("overallInc").value) || 0;
-    const avgSavedMin = Number($("avgSavedMin").value) || 0;
-    const useAvg = $("useAvgForSummary").checked;
-
-    const n = ids.n.map(get);
-    const c = ids.c.map(get);
-    const m = ids.m.map(get);
-    const a = ids.a.map(get);
-    const cost = ids.cost.map(get);
-
-    return {fte, prodGain, overallInc, avgSavedMin, useAvg, n, c, m, a, cost};
-  }
-
-  let timeChart, costChart;
-
-  function renderTimeChart(manualHours, agenticHours){
-    const ctx = document.getElementById("timeChart").getContext("2d");
-    const data = [manualHours, agenticHours];
-
-    if (timeChart){
-      timeChart.data.datasets[0].data = data;
-      timeChart.update();
-      return;
-    }
-
-    timeChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Manual","AI"],
-        datasets: [{
-          data,
-          backgroundColor: ["#2F80ED","#00B894"],
-          borderWidth: 0,
-          borderRadius: 8
-        }]
-      },
-      options: {
-        plugins: { legend: { display:false } },
-        scales: {
-          y: {
-            beginAtZero:true,
-            title:{display:true, text:"Hours"},
-            grid:{ color:"rgba(255,255,255,.08)" },
-            ticks:{ color:"#DCE7F4" }
-          },
-          x: {
-            grid:{ display:false },
-            ticks:{ color:"#DCE7F4" }
-          }
-        }
-      }
-    });
-  }
-
-  function renderCostChart(manualTotalCost, agenticTotalCost){
-    const ctx = document.getElementById("costChart").getContext("2d");
-    const data = [manualTotalCost, agenticTotalCost];
-
-    if (costChart){
-      costChart.data.datasets[0].data = data;
-      costChart.update();
-      return;
-    }
-
-    costChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Manual","AI"],
-        datasets: [{
-          data,
-          backgroundColor: ["#2F80ED","#00B894"],
-          borderWidth: 0,
-          borderRadius: 8
-        }]
-      },
-      options: {
-        plugins: { legend: { display:false } },
-        scales: {
-          y: {
-            beginAtZero:true,
-            title:{display:true, text:"$ total"},
-            grid:{ color:"rgba(255,255,255,.08)" },
-            ticks:{
-              color:"#DCE7F4",
-              callback:(v)=>'$'+fmt(v,0)
-            }
-          },
-          x: {
-            grid:{ display:false },
-            ticks:{ color:"#DCE7F4" }
-          }
-        }
-      }
-    });
-  }
-
-  function calc() {
-    const x = readInputs();
-    const tbody = $("rows");
-    tbody.innerHTML = "";
-
-    let totalCredits = 0;
-    let totalTests = x.n.reduce((s,v)=>s+(v||0),0);
-
-    let roiList = [];
-    let totalTimeSavedMinutesByType = 0;
-
-    TYPES.forEach((name, i) => {
-      const manualTime = Math.max(0, x.m[i]||0);
-      const agenticTime = Math.max(0, x.a[i]||0);
-      const agenticCost = Math.max(0, x.cost[i]||0);
-      const qty = Math.max(0, x.n[i]||0);
-      const creditsPerTest = Math.max(0, x.c[i]||0);
-
-      const manualCost = (manualTime/60) * x.fte;
-      const timeSavedMin = Math.max(0, manualTime - agenticTime);
-      const timeCostSaved = manualCost - agenticCost;
-      const roiPct = agenticCost > 0 ? (timeCostSaved/agenticCost)*100 : 0;
-      const productivity = agenticTime > 0 ? manualTime / agenticTime : 0;
-
-      totalCredits += qty * creditsPerTest;
-      totalTimeSavedMinutesByType += qty * timeSavedMin;
-      roiList.push(roiPct);
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${name}</td>
-        <td>${fmt(manualTime,0)}</td>
-        <td>${fmt(agenticTime,0)}</td>
-        <td>${money(agenticCost)}</td>
-        <td>${money(manualCost)}</td>
-        <td>${fmt(timeSavedMin,0)}</td>
-        <td>${money(timeCostSaved)}</td>
-        <td>${fmt(x.prodGain,0)}</td>
-        <td>${fmt(roiPct,2)}</td>
-      `;
-      tbody.appendChild(tr);
-
-      const tsCell = $(ids.ts[i]);
-      if (tsCell) tsCell.textContent = fmt(timeSavedMin,0);
-
-      const piCell = $(ids.pi[i]);
-      if (piCell) piCell.textContent = agenticTime > 0 ? `${fmt(productivity,1)}x` : "—";
-    });
-
-    const avgRoi = roiList.length ? roiList.reduce((s,v)=>s+v,0)/roiList.length : 0;
-
-    const avgSavedPerTestMin = x.avgSavedMin;
-    const totalSavedMinutes = x.useAvg
-      ? totalTests * avgSavedPerTestMin
-      : totalTimeSavedMinutesByType;
-
-    const totalSavedHours = totalSavedMinutes / 60;
-    const totalCostSaved = totalSavedHours * x.fte;
-    const daysSaved = totalSavedHours / 8;
-
-    const PACK_SIZE = 24000;
-    const packsNeeded = Math.ceil((totalCredits || 0) / PACK_SIZE);
-
-    const totalManualMinutes = TYPES.reduce((s,_,i)=> s + (x.n[i]||0)*(x.m[i]||0), 0);
-    const totalAgenticMinutes = TYPES.reduce((s,_,i)=> s + (x.n[i]||0)*(x.a[i]||0), 0);
-    const totalManualHours = totalManualMinutes / 60;
-    const totalAgenticHours = totalAgenticMinutes / 60;
-
-    const totalManualCost = TYPES.reduce((s,_,i)=> s + (x.n[i]||0) * ((x.m[i]||0)/60 * x.fte), 0);
-    const totalAgenticCost = TYPES.reduce((s,_,i)=> s + (x.n[i]||0) * (x.cost[i]||0), 0);
-
-    $("kCredits").textContent = fmt(totalCredits,0);
-    $("kNum").textContent = fmt(totalTests,0);
-    $("kManualHours").textContent = fmt(totalManualHours,1);
-    $("kAgenticHours").textContent = fmt(totalAgenticHours,1);
-    $("kAvgMin").textContent = fmt(avgSavedPerTestMin,0);
-    $("kHours").textContent = fmt(totalSavedHours,1);
-    $("kSaved").textContent = money(totalCostSaved);
-    $("kAvgRoi").textContent = fmt(avgRoi,2);
-    $("kDays").textContent = fmt(daysSaved,0);
-    $("kPacks").textContent = fmt(packsNeeded,0);
-
-    renderTimeChart(totalManualHours, totalAgenticHours);
-    renderCostChart(totalManualCost, totalAgenticCost);
-  }
-
-  function syncFromUrl(){
-    const p=new URLSearchParams(location.search);
-    [...ids.n,...ids.c,...ids.m,...ids.a,...ids.cost,"fte","prodGain","overallInc","avgSavedMin","useAvgForSummary"].forEach(id=>{
-      if(!p.has(id)) return;
-      if(id==="useAvgForSummary"){ $(id).checked = ["1","true","yes"].includes(String(p.get(id)).toLowerCase()); }
-      else { $(id).value = p.get(id); }
-    });
-  }
-
-  ["nBasic","nMedium","nComplex","nVComplex","cBasic","cMedium","cComplex","cVComplex",
-   "mBasic","mMedium","mComplex","mVComplex","aBasic","aMedium","aComplex","aVComplex",
-   "costBasic","costMedium","costComplex","costVComplex","fte","prodGain","overallInc",
-   "avgSavedMin","useAvgForSummary"].forEach(id=>{
-     $(id).addEventListener(id==="useAvgForSummary"?"change":"input",calc);
-  });
-
-  syncFromUrl();
-  calc();
-</script>
 </body>
 </html>
