@@ -80,6 +80,10 @@
 
   /* Tighten grid for those rows (Field | Manual | Agentic) */
   .row.testtype{grid-template-columns:1fr 140px 140px}
+
+  /* Remove space between Test Type and Manual Time columns */
+  .row.testtype,
+  .row.head.testtype{column-gap:0}
 </style>
 </head>
 <body>
@@ -171,6 +175,7 @@
       <div class="kpis">
         <div class="kpi hl"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
         <div class="kpi hl"><div class="lbl">Total Credits Required</div><div id="kCredits" class="val">—</div></div>
+        <div class="kpi hl"><div class="lbl">Packs Needed (24,000 credits/pack)</div><div id="kPacks" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
@@ -265,6 +270,9 @@
     const totalCostSaved = totalSavedHours * x.fte;
     const daysSaved = totalSavedHours / 8;
 
+    const PACK_SIZE = 24000;
+    const packsNeeded = Math.ceil((totalCredits || 0) / PACK_SIZE);
+
     $("kCredits").textContent = fmt(totalCredits,0);
     $("kNum").textContent = fmt(totalTests,0);
     $("kAvgMin").textContent = fmt(avgSavedPerTestMin,0);
@@ -272,6 +280,7 @@
     $("kSaved").textContent = money(totalCostSaved);
     $("kAvgRoi").textContent = fmt(avgRoi,2);
     $("kDays").textContent = fmt(daysSaved,0);
+    $("kPacks").textContent = fmt(packsNeeded,0);
   }
 
   function syncFromUrl(){
