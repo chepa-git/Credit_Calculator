@@ -56,6 +56,7 @@
   .ig{background:linear-gradient(180deg,rgba(0,84,166,.14),rgba(0,84,166,.06));border:1px solid rgba(0,84,166,.45);border-radius:12px;padding:10px}
   .ig label{display:block;font-size:12px;color:#f1f7ff;margin-bottom:6px}
   .ig input{width:100%}
+  .ig canvas{width:100%;height:140px}
 
   /* Results table */
   table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px;table-layout:fixed}
@@ -93,7 +94,7 @@
   .row.testtype,
   .row.head.testtype{column-gap:0}
 
-  /* Chart */
+  /* Results card chart */
   .chart{margin-top:12px;background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
   .chart canvas{width:100%;height:260px}
 </style>
@@ -168,6 +169,10 @@
         <div class="ig"><label>Overall Productivity Increase (%)</label><input id="overallInc" type="number" value="60" min="0" max="100" step="1"></div>
         <div class="ig"><label>Avg Time Saved per Test (min)</label><input id="avgSavedMin" type="number" value="30" min="0" step="1"></div>
         <div class="ig" style="grid-column: span 2"><label>Use Avg Time Saved for totals</label><input id="useAvgForSummary" type="checkbox" checked></div>
+        <div class="ig" style="grid-column: span 2">
+          <label>Cost Comparison (avg per test)</label>
+          <canvas id="costChart"></canvas>
+        </div>
       </div>
     </div>
 
@@ -247,7 +252,8 @@
     return {fte, prodGain, overallInc, avgSavedMin, useAvg, n, c, m, a, cost};
   }
 
-  let timeChart;
+  let timeChart, costChart;
+
   function renderTimeChart(manualHours, agenticHours){
     const ctx = document.getElementById("timeChart").getContext("2d");
     const data = [manualHours, agenticHours];
@@ -277,6 +283,48 @@
             title:{display:true, text:"Hours"},
             grid:{ color:"rgba(255,255,255,.08)" },
             ticks:{ color:"#DCE7F4" }
+          },
+          x: {
+            grid:{ display:false },
+            ticks:{ color:"#DCE7F4" }
+          }
+        }
+      }
+    });
+  }
+
+  function renderCostChart(manualAvgCost, agenticAvgCost){
+    const ctx = document.getElementById("costChart").getContext("2d");
+    const data = [manualAvgCost, agenticAvgCost];
+
+    if (costChart){
+      costChart.data.datasets[0].data = data;
+      costChart.update();
+      return;
+    }
+
+    costChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Manual","AI"],
+        datasets: [{
+          data,
+          backgroundColor: ["#2F80ED","#00B894"],
+          borderWidth: 0,
+          borderRadius: 8
+        }]
+      },
+      options: {
+        plugins: { legend: { display:false } },
+        scales: {
+          y: {
+            beginAtZero:true,
+            title:{display:true, text:"$ per test"},
+            grid:{ color:"rgba(255,255,255,.08)" },
+            ticks:{
+              color:"#DCE7F4",
+              callback:(v)=>'$'+fmt(v,0)
+            }
           },
           x: {
             grid:{ display:false },
@@ -355,6 +403,11 @@
     const totalManualHours = totalManualMinutes / 60;
     const totalAgenticHours = totalAgenticMinutes / 60;
 
+    const totalManualCost = TYPES.reduce((s,_,i)=> s + (x.n[i]||0) * ((x.m[i]||0)/60 * x.fte), 0);
+    const totalAgenticCost = TYPES.reduce((s,_,i)=> s + (x.n[i]||0) * (x.cost[i]||0), 0);
+    const manualAvgCostPerTest = totalTests ? totalManualCost/totalTests : 0;
+    const agenticAvgCostPerTest = totalTests ? totalAgenticCost/totalTests : 0;
+
     $("kCredits").textContent = fmt(totalCredits,0);
     $("kNum").textContent = fmt(totalTests,0);
     $("kManualHours").textContent = fmt(totalManualHours,1);
@@ -367,6 +420,7 @@
     $("kPacks").textContent = fmt(packsNeeded,0);
 
     renderTimeChart(totalManualHours, totalAgenticHours);
+    renderCostChart(manualAvgCostPerTest, agenticAvgCostPerTest);
   }
 
   function syncFromUrl(){
