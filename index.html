@@ -87,10 +87,10 @@
 
   /* Benefits */
   .benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
-  .benefit-card{background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .benefit-card{background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px;overflow-x:auto}
   .benefit-card .lbl{color:var(--muted);font-size:12px;margin-bottom:6px}
   .typed-list{margin:0 0 0 16px;padding:0}
-  .typed-list li{margin:6px 0}
+  .typed-list li{margin:6px 0;white-space:nowrap;word-break:keep-all;overflow-wrap:normal}
 </style>
 </head>
 <body>
@@ -121,7 +121,7 @@
         <input id="cVComplex" type="number" value="650" min="0" step="1"/>
       </div>
 
-      <div class="row head testtype" style="margin-top:20px">
+      <div class="row head testtype" style="margin-top:10px">
         <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Time Saved (min)</div><div>Productivity Increased</div><div>Agentic Cost ($)</div><div></div>
       </div>
       <div class="row testtype">
