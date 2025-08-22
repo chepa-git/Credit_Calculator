@@ -68,6 +68,18 @@
   .kpi .lbl{color:var(--muted);font-size:12px;margin-bottom:4px}
   .kpi .val{font-weight:800;font-size:18px}
   .kpi.hl{background:linear-gradient(180deg,rgba(243,112,33,.18),rgba(243,112,33,.07));border-color:rgba(243,112,33,.55)}
+
+  /* Hide the results table but keep it in DOM for calc() */
+  #resultsTable{display:none}
+
+  /* Hide Agentic Cost inputs column (+ trailing spacer) only for Test Type rows */
+  .row.testtype > :nth-child(4),
+  .row.head.testtype > :nth-child(4){display:none}
+  .row.testtype > :nth-child(5),
+  .row.head.testtype > :nth-child(5){display:none}
+
+  /* Tighten grid for those rows (Field | Manual | Agentic) */
+  .row.testtype{grid-template-columns:1fr 140px 140px}
 </style>
 </head>
 <body>
@@ -98,28 +110,28 @@
         <input id="cVComplex" type="number" value="650" min="0" step="1"/>
       </div>
 
-      <div class="row head" style="margin-top:10px">
+      <div class="row head testtype" style="margin-top:10px">
         <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Agentic Cost ($)</div><div></div>
       </div>
-      <div class="row">
+      <div class="row testtype">
         <div>Basic</div>
         <input id="mBasic" type="number" value="30" min="0" step="1"/>
         <input id="aBasic" type="number" value="5" min="0" step="1"/>
         <input id="costBasic" type="number" value="10" min="0" step="0.01"/><div></div>
       </div>
-      <div class="row">
+      <div class="row testtype">
         <div>Medium</div>
         <input id="mMedium" type="number" value="45" min="0" step="1"/>
         <input id="aMedium" type="number" value="5" min="0" step="1"/>
         <input id="costMedium" type="number" value="15" min="0" step="0.01"/><div></div>
       </div>
-      <div class="row">
+      <div class="row testtype">
         <div>Complex</div>
         <input id="mComplex" type="number" value="120" min="0" step="1"/>
         <input id="aComplex" type="number" value="25" min="0" step="1"/>
         <input id="costComplex" type="number" value="45" min="0" step="0.01"/><div></div>
       </div>
-      <div class="row">
+      <div class="row testtype">
         <div>Very Complex</div>
         <input id="mVComplex" type="number" value="300" min="0" step="1"/>
         <input id="aVComplex" type="number" value="35" min="0" step="1"/>
@@ -138,7 +150,7 @@
     <div class="card">
       <h2>Results</h2>
 
-      <table>
+      <table id="resultsTable">
         <colgroup><col/><col/><col/><col/><col/><col/><col/><col/><col/></colgroup>
         <thead>
           <tr>
@@ -189,7 +201,7 @@
     const prodGain = Number($("prodGain").value) || 0;
     const overallInc = Number($("overallInc").value) || 0;
     const avgSavedMin = Number($("avgSavedMin").value) || 0;
-    const useAvg = $("useAvgForSummary").unchecked;
+    const useAvg = $("useAvgForSummary").checked;
 
     const n = ids.n.map(get);
     const c = ids.c.map(get);
