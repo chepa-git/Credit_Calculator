@@ -43,6 +43,14 @@
   }
   input[type="number"]:focus{outline:2px solid var(--accent-2);border-color:transparent}
 
+  /* Readout cell to align like inputs */
+  .readout{
+    padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+    background:var(--bg-950);color:var(--text);
+    display:flex;align-items:center;justify-content:flex-end;
+    font-weight:700;
+  }
+
   .inputs-grid{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:10px;margin-top:12px}
   @media (max-width:980px){.inputs-grid{grid-template-columns:repeat(2,minmax(180px,1fr))}}
   .ig{background:linear-gradient(180deg,rgba(0,84,166,.14),rgba(0,84,166,.06));border:1px solid rgba(0,84,166,.45);border-radius:12px;padding:10px}
@@ -77,8 +85,9 @@
   .row.testtype > :nth-child(6),
   .row.head.testtype > :nth-child(6){display:none}
 
-  /* Tighten grid for those rows (Field | Manual | Agentic | Saved) */
+  /* Ensure header uses same grid as body (Field | Manual | Agentic | Saved) */
   .row.testtype{grid-template-columns:1fr 140px 140px 140px}
+  .row.head.testtype{grid-template-columns:1fr 140px 140px 140px}
 
   /* Remove space between Test Type and Manual Time columns */
   .row.testtype,
@@ -119,29 +128,29 @@
       <div class="row testtype">
         <div>Basic</div>
         <input id="mBasic" type="number" value="30" min="0" step="1"/>
-        <input id="aBasic" type="number" value="5" min="0" step="1"/>
-        <div id="tsBasic">—</div>
+        <input id="aBasic" type="number" value="7" min="0" step="1"/>
+        <div id="tsBasic" class="readout">—</div>
         <input id="costBasic" type="number" value="10" min="0" step="0.01"/><div></div>
       </div>
       <div class="row testtype">
         <div>Medium</div>
         <input id="mMedium" type="number" value="45" min="0" step="1"/>
         <input id="aMedium" type="number" value="5" min="0" step="1"/>
-        <div id="tsMedium">—</div>
+        <div id="tsMedium" class="readout">—</div>
         <input id="costMedium" type="number" value="15" min="0" step="0.01"/><div></div>
       </div>
       <div class="row testtype">
         <div>Complex</div>
         <input id="mComplex" type="number" value="120" min="0" step="1"/>
         <input id="aComplex" type="number" value="25" min="0" step="1"/>
-        <div id="tsComplex">—</div>
+        <div id="tsComplex" class="readout">—</div>
         <input id="costComplex" type="number" value="45" min="0" step="0.01"/><div></div>
       </div>
       <div class="row testtype">
         <div>Very Complex</div>
         <input id="mVComplex" type="number" value="300" min="0" step="1"/>
         <input id="aVComplex" type="number" value="35" min="0" step="1"/>
-        <div id="tsVComplex">—</div>
+        <div id="tsVComplex" class="readout">—</div>
         <input id="costVComplex" type="number" value="100" min="0" step="0.01"/><div></div>
       </div>
 
