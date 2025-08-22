@@ -83,9 +83,6 @@
   .row.testtype{grid-template-columns:1fr 140px 140px 140px 160px}
   .row.head.testtype{grid-template-columns:1fr 140px 140px 140px 160px}
   .row.testtype, .row.head.testtype{column-gap:0}
-
-  .chart{margin-top:12px;background:var(--bg-950);border:1px solid var(--border);border-radius:12px;padding:12px}
-  .chart canvas{width:100%;height:260px}
 </style>
 </head>
 <body>
@@ -116,7 +113,7 @@
         <input id="cVComplex" type="number" value="650" min="0" step="1"/>
       </div>
 
-      <div class="row head testtype" style="margin-top:10px">
+      <div class="row head testtype" style="margin-top:20px">
         <div>Test Type</div><div>Manual Time (min)</div><div>Agentic Time (min)</div><div>Time Saved (min)</div><div>Productivity Increased</div><div>Agentic Cost ($)</div><div></div>
       </div>
       <div class="row testtype">
@@ -168,6 +165,10 @@
           <label>Cost Comparison (total)</label>
           <canvas id="costChart"></canvas>
         </div>
+        <div class="ig" style="grid-column: span 2">
+          <label>Time Comparison (total hours)</label>
+          <canvas id="timeChart"></canvas>
+        </div>
       </div>
     </div>
 
@@ -203,11 +204,6 @@
         <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg ROI per Test (%)</div><div id="kAvgRoi" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Days Saved</div><div id="kDays" class="val">—</div></div>
-      </div>
-
-      <div class="chart">
-        <div class="lbl" style="margin-bottom:6px">Time Comparison</div>
-        <canvas id="timeChart"></canvas>
       </div>
     </div>
   </div>
