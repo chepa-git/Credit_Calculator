@@ -111,7 +111,7 @@
       </div>
 
       <div class="row">
-        <div>No of Testcases</div>
+        <div>no of Testcases</div>
         <input id="nBasic" type="number" value="110" min="0" step="1"/>
         <input id="nMedium" type="number" value="150" min="0" step="1"/>
         <input id="nComplex" type="number" value="250" min="0" step="1"/>
@@ -196,6 +196,8 @@
         <div class="kpi hl"><div class="lbl">Number of tests</div><div id="kNum" class="val">—</div></div>
         <div class="kpi hl"><div class="lbl">Total Credits Required</div><div id="kCredits" class="val">—</div></div>
         <div class="kpi hl"><div class="lbl">Packs Needed (24,000 credits/pack)</div><div id="kPacks" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Total Manual Time (hrs)</div><div id="kManualHours" class="val">—</div></div>
+        <div class="kpi"><div class="lbl">Total Agentic Time (hrs)</div><div id="kAgenticHours" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Avg Time Saved per Test (min)</div><div id="kAvgMin" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Time Saved (hrs)</div><div id="kHours" class="val">—</div></div>
         <div class="kpi"><div class="lbl">Total Cost Saved ($)</div><div id="kSaved" class="val">—</div></div>
@@ -246,9 +248,9 @@
   }
 
   let timeChart;
-  function renderTimeChart(manualAvgMin, agenticAvgMin){
+  function renderTimeChart(manualHours, agenticHours){
     const ctx = document.getElementById("timeChart").getContext("2d");
-    const data = [manualAvgMin, agenticAvgMin];
+    const data = [manualHours, agenticHours];
 
     if (timeChart){
       timeChart.data.datasets[0].data = data;
@@ -272,6 +274,7 @@
         scales: {
           y: {
             beginAtZero:true,
+            title:{display:true, text:"Hours"},
             grid:{ color:"rgba(255,255,255,.08)" },
             ticks:{ color:"#DCE7F4" }
           },
@@ -347,20 +350,23 @@
     const PACK_SIZE = 24000;
     const packsNeeded = Math.ceil((totalCredits || 0) / PACK_SIZE);
 
+    const totalManualMinutes = TYPES.reduce((s,_,i)=> s + (x.n[i]||0)*(x.m[i]||0), 0);
+    const totalAgenticMinutes = TYPES.reduce((s,_,i)=> s + (x.n[i]||0)*(x.a[i]||0), 0);
+    const totalManualHours = totalManualMinutes / 60;
+    const totalAgenticHours = totalAgenticMinutes / 60;
+
     $("kCredits").textContent = fmt(totalCredits,0);
     $("kNum").textContent = fmt(totalTests,0);
+    $("kManualHours").textContent = fmt(totalManualHours,1);
+    $("kAgenticHours").textContent = fmt(totalAgenticHours,1);
     $("kAvgMin").textContent = fmt(avgSavedPerTestMin,0);
-    $("kHours").textContent = fmt(totalSavedHours,0);
+    $("kHours").textContent = fmt(totalSavedHours,1);
     $("kSaved").textContent = money(totalCostSaved);
     $("kAvgRoi").textContent = fmt(avgRoi,2);
     $("kDays").textContent = fmt(daysSaved,0);
     $("kPacks").textContent = fmt(packsNeeded,0);
 
-    const totalManualMinutes = TYPES.reduce((s,_,i)=> s + (x.n[i]||0)*(x.m[i]||0), 0);
-    const totalAgenticMinutes = TYPES.reduce((s,_,i)=> s + (x.n[i]||0)*(x.a[i]||0), 0);
-    const manualAvgMin = totalTests ? totalManualMinutes/totalTests : 0;
-    const agenticAvgMin = totalTests ? totalAgenticMinutes/totalTests : 0;
-    renderTimeChart(manualAvgMin, agenticAvgMin);
+    renderTimeChart(totalManualHours, totalAgenticHours);
   }
 
   function syncFromUrl(){
