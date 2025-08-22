@@ -170,7 +170,7 @@
         <div class="ig"><label>Avg Time Saved per Test (min)</label><input id="avgSavedMin" type="number" value="30" min="0" step="1"></div>
         <div class="ig" style="grid-column: span 2"><label>Use Avg Time Saved for totals</label><input id="useAvgForSummary" type="checkbox" checked></div>
         <div class="ig" style="grid-column: span 2">
-          <label>Cost Comparison (avg per test)</label>
+          <label>Cost Comparison (total)</label>
           <canvas id="costChart"></canvas>
         </div>
       </div>
@@ -293,9 +293,9 @@
     });
   }
 
-  function renderCostChart(manualAvgCost, agenticAvgCost){
+  function renderCostChart(manualTotalCost, agenticTotalCost){
     const ctx = document.getElementById("costChart").getContext("2d");
-    const data = [manualAvgCost, agenticAvgCost];
+    const data = [manualTotalCost, agenticTotalCost];
 
     if (costChart){
       costChart.data.datasets[0].data = data;
@@ -319,7 +319,7 @@
         scales: {
           y: {
             beginAtZero:true,
-            title:{display:true, text:"$ per test"},
+            title:{display:true, text:"$ total"},
             grid:{ color:"rgba(255,255,255,.08)" },
             ticks:{
               color:"#DCE7F4",
@@ -405,8 +405,6 @@
 
     const totalManualCost = TYPES.reduce((s,_,i)=> s + (x.n[i]||0) * ((x.m[i]||0)/60 * x.fte), 0);
     const totalAgenticCost = TYPES.reduce((s,_,i)=> s + (x.n[i]||0) * (x.cost[i]||0), 0);
-    const manualAvgCostPerTest = totalTests ? totalManualCost/totalTests : 0;
-    const agenticAvgCostPerTest = totalTests ? totalAgenticCost/totalTests : 0;
 
     $("kCredits").textContent = fmt(totalCredits,0);
     $("kNum").textContent = fmt(totalTests,0);
@@ -420,7 +418,7 @@
     $("kPacks").textContent = fmt(packsNeeded,0);
 
     renderTimeChart(totalManualHours, totalAgenticHours);
-    renderCostChart(manualAvgCostPerTest, agenticAvgCostPerTest);
+    renderCostChart(totalManualCost, totalAgenticCost);
   }
 
   function syncFromUrl(){
